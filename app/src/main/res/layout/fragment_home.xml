@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <SurfaceView
+        android:id="@+id/sueface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/lay_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@mipmap/left_bg"
+            android:orientation="vertical">
+
+            <com.example.administrator.attendanceinputv3.widget.CustomViewTimeDate
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recy_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/lay_right"
+            android:layout_toRightOf="@+id/lay_left">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/img_card_now">
+
+                <ImageView
+                    android:layout_width="198dp"
+                    android:layout_height="198dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:padding="40dp"
+                    android:src="@drawable/ic_launcher_background" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/img_dk_top"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="30dp">
+
+                    <ImageView
+                        android:layout_width="260dp"
+                        android:layout_height="260dp"
+                        android:src="@mipmap/ic_launcher"
+                        android:background="@mipmap/img_tx_bg_b"
+                        android:padding="40dp"
+                        />
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@mipmap/img_tx_bg_b"-->
+                        <!--android:gravity="center"-->
+                       <!--&gt;-->
+
+                       <!---->
+                    <!--</LinearLayout>-->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:text="陈五月"
+                        android:textColor="@color/color_font_white"
+                        android:textSize="56dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="09:12:22"
+                        android:textColor="@color/color_font_white_2"
+                        android:textSize="32dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/img_dk_bottom"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="30dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="班组：木工一班"
+                        android:textColor="@color/color_font_white_2"
+                        android:textSize="32dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="工种：一班"
+                        android:textColor="@color/color_font_white_2"
+                        android:textSize="32dp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/img_zs" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/lay_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/img_tit">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:ems="1"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="0.1dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"
+                android:text="滨海科技大厦一期装饰工程"
+                android:textColor="@color/color_font_white"
+                android:textSize="36sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</FrameLayout>

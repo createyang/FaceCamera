@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorTimeBg">#80071831</color>
+    <color name="color_font_white">#ffffff</color>
+    <color name="color_font_white_2">#dadada</color>
+    <color name="edit_hint_text_color">#666666</color>
+    <color name="edit_text_color">#111111</color>
+    <color name="color_alpha_15_withs">#26ffffff</color>
+    <color name="color_bg_top_current">#141A2C</color>
+    <color name="color_bg_bottom_current">#B30E1E36</color>
+
+</resources>

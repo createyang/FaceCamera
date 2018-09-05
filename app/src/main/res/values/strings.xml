@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">AttendanceInputV3</string>
+    <string name="please_enter_project_code">请输入项目编码</string>
+    <string name="please_select_attendance_equipment">请选择考勤设备</string>
+    <string name="exception_request_timeout">请求超时</string>
+    <string name="exception_connect">连接异常</string>
+    <string name="network_available">当前网络不可使用</string>
+    <string name="server_returns_empty_data">服务器返回数据为空</string>
+    <string name="server_exception">服务器异常</string>
+    <string name="attendance_device_no_found">未发现考勤设备</string>
+    <string name="attendance_device_ip_no_found">未发现考勤设备Ip</string>
+</resources>

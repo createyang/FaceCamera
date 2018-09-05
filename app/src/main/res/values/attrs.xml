@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomEditText">
+        <attr name="hintText"  format="string"/>
+        <attr name="editBg"  format="reference|integer"/>
+        <attr name="canEnter"  format="boolean"/>
+        <attr name="showExpansionList"  format="boolean"/>
+    </declare-styleable>
+
+
+</resources>
