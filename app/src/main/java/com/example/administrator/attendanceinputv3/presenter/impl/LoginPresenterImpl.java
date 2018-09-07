@@ -37,6 +37,11 @@ public class LoginPresenterImpl implements LoginPresenter {
         }
         loginRequest.postRequest(codeStr, new NetworkListener<List<FaceDeviceBean>>() {
             @Override
+            public void onStart() {
+
+            }
+
+            @Override
             public void onError(String errorMessage) {
                 LogUtils.e("onGetDevice:" + errorMessage);
                 loginView.onGetDeviceFailure(errorMessage);

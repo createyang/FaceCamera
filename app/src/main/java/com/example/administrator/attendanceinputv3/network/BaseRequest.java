@@ -2,14 +2,12 @@ package com.example.administrator.attendanceinputv3.network;
 
 import com.example.administrator.attendanceinputv3.R;
 import com.example.administrator.attendanceinputv3.base.BaseApplication;
-import com.example.administrator.attendanceinputv3.model.BaseResultBean;
 import com.example.administrator.attendanceinputv3.utils.NetworkUtils;
 import com.example.administrator.attendanceinputv3.utils.StringUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -26,6 +24,8 @@ import java.util.Map;
  * @description:
  */
 public abstract class BaseRequest<T> {
+    private Object tag;
+
     enum HttpMethodType {
         /**
          * get/post请求
@@ -48,7 +48,7 @@ public abstract class BaseRequest<T> {
         return params;
     }
 
-    public Request getRequest() {
+    public Request baseGetRequest() {
         return request;
     }
 
@@ -60,11 +60,13 @@ public abstract class BaseRequest<T> {
     /**
      * @return
      */
-    public  NetworkListener getNetworkListener(){
+    public NetworkListener getNetworkListener() {
         return networkListener;
-    };
+    }
 
-    void getRequest(String url, Map<String, String> params,NetworkListener networkListener) {
+    ;
+
+    void baseGetRequest(String url, Map<String, String> params, NetworkListener networkListener) {
         if (!NetworkUtils.isNetworkAvailable()) {
             networkListener.onError(BaseApplication.getContext().getString(R.string.network_available));
             return;
@@ -72,11 +74,25 @@ public abstract class BaseRequest<T> {
         this.url = url;
         this.params = params;
         this.networkListener = networkListener;
-        request = buildRequest(url, BaseRequest.HttpMethodType.GET, params);
-        NetworkManager.getInstance().request(this);
+        request = buildRequest(url, BaseRequest.HttpMethodType.GET, params, null);
+        NetworkManager.getInstance().asynRequest(this);
     }
 
-    void postRequest(String url, Map<String, String> params,NetworkListener networkListener) {
+
+    void basePostRequest(String url, Map<String, String> params, NetworkListener networkListener) {
+//        if (!NetworkUtils.isNetworkAvailable()) {
+//            networkListener.onError(BaseApplication.getContext().getString(R.string.network_available));
+//            return;
+//        }
+//        this.url = url;
+//        this.params = params;
+//        this.networkListener = networkListener;
+//        request = buildRequest(url, HttpMethodType.POST, params);
+//        NetworkManager.getInstance().asynRequest(this);
+        basePostRequest(url, params, networkListener, null);
+    }
+
+    void basePostRequest(String url, Map<String, String> params, NetworkListener networkListener, Object tag) {
         if (!NetworkUtils.isNetworkAvailable()) {
             networkListener.onError(BaseApplication.getContext().getString(R.string.network_available));
             return;
@@ -84,12 +100,15 @@ public abstract class BaseRequest<T> {
         this.url = url;
         this.params = params;
         this.networkListener = networkListener;
-        request = buildRequest(url, HttpMethodType.POST, params);
-        NetworkManager.getInstance().request(this);
+        if (tag != null) {
+            this.tag = tag;
+        }
+        request = buildRequest(url, HttpMethodType.POST, params, tag);
+        NetworkManager.getInstance().asynRequest(this);
     }
 
 
-    private Request buildRequest(String url, BaseRequest.HttpMethodType methodType, Map<String, String> params) {
+    private Request buildRequest(String url, BaseRequest.HttpMethodType methodType, Map<String, String> params, Object tag) {
         Request.Builder builder = new Request.Builder();
         if (methodType == BaseRequest.HttpMethodType.POST) {
             builder.url(url)
@@ -97,6 +116,9 @@ public abstract class BaseRequest<T> {
         } else if (methodType == BaseRequest.HttpMethodType.GET) {
             builder.url(builderGetUrl(url, params))
                     .get();
+        }
+        if (tag != null) {
+            builder.tag(tag);
         }
         return builder.build();
     }

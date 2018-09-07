@@ -1,17 +1,49 @@
 package com.example.administrator.attendanceinputv3.model;
 
 
-
 /**
  * @author Caoy
  */
 public class PersonModel {
+
     private String personID;
     public String name;
     public byte age;
     public byte sex;
-    public byte[] img;
+    public byte[] scanImg;
+    private String ioTimeStr;
+    private String verifyFacImgUrl;
+    public byte[] verifyFacImg;
     public boolean result;
+    private String groupName;
+    private String job;
+
+
+    public String getIoTimeStr() {
+        return ioTimeStr;
+    }
+
+    public String getVerifyFacImgUrl() {
+        return verifyFacImgUrl;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+
+    public byte[] getVerifyFacImg() {
+        return verifyFacImg;
+    }
+
+    public void setVerifyFacImg(byte[] verifyFacImg) {
+        this.verifyFacImg = verifyFacImg;
+    }
+
     public String getName() {
         return name;
     }
@@ -28,12 +60,12 @@ public class PersonModel {
         this.age = age;
     }
 
-    public byte[] getImg() {
-        return img;
+    public byte[] getScanImg() {
+        return scanImg;
     }
 
-    public void setImg(byte[] img) {
-        this.img = img;
+    public void setScanImg(byte[] scanImg) {
+        this.scanImg = scanImg;
     }
 
     public byte getSex() {
@@ -52,13 +84,33 @@ public class PersonModel {
         this.result = result;
     }
 
-    /** 获取人员编号；如果未匹配到可能为null或者空值 */
+    /**
+     * 获取人员编号；如果未匹配到可能为null或者空值
+     */
     public String getPersonID() {
         return personID;
     }
 
-    /** 设置人员编号 */
+    /**
+     * 设置人员编号
+     */
     public void setPersonID(String personID) {
         this.personID = personID;
+    }
+
+    public void setIoTimeStr(String ioTimeStr) {
+        this.ioTimeStr = ioTimeStr;
+    }
+
+    public void setVerifyFacImgUrl(String verifyFacImgUrl) {
+        this.verifyFacImgUrl = verifyFacImgUrl;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
     }
 }

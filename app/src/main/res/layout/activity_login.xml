@@ -58,14 +58,14 @@
         android:layout_centerInParent="true"
         android:orientation="vertical">
 
-        <com.example.administrator.attendanceinputv3.widget.CustomEditText
+        <com.example.administrator.attendanceinputv3.widget.CustomViewEditText
             android:id="@+id/cus_edit_project_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:editBg="@mipmap/input_01"
             app:hintText="@string/please_enter_project_code" />
 
-        <com.example.administrator.attendanceinputv3.widget.CustomEditText
+        <com.example.administrator.attendanceinputv3.widget.CustomViewEditText
             android:id="@+id/cus_select_attendance_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

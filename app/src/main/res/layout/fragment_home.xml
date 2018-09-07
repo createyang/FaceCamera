@@ -12,11 +12,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <!--左边-->
         <LinearLayout
             android:id="@+id/lay_left"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginEnd="40dp"
             android:background="@mipmap/left_bg"
             android:orientation="vertical">
 
@@ -31,116 +32,14 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/lay_right"
-            android:layout_toRightOf="@+id/lay_left">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@mipmap/img_card_now">
-
-                <ImageView
-                    android:layout_width="198dp"
-                    android:layout_height="198dp"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:padding="40dp"
-                    android:src="@drawable/ic_launcher_background" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/img_dk_top"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:padding="30dp">
-
-                    <ImageView
-                        android:layout_width="260dp"
-                        android:layout_height="260dp"
-                        android:src="@mipmap/ic_launcher"
-                        android:background="@mipmap/img_tx_bg_b"
-                        android:padding="40dp"
-                        />
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:background="@mipmap/img_tx_bg_b"-->
-                        <!--android:gravity="center"-->
-                       <!--&gt;-->
-
-                       <!---->
-                    <!--</LinearLayout>-->
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:text="陈五月"
-                        android:textColor="@color/color_font_white"
-                        android:textSize="56dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="09:12:22"
-                        android:textColor="@color/color_font_white_2"
-                        android:textSize="32dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/img_dk_bottom"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:padding="30dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="班组：木工一班"
-                        android:textColor="@color/color_font_white_2"
-                        android:textSize="32dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="工种：一班"
-                        android:textColor="@color/color_font_white_2"
-                        android:textSize="32dp" />
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/img_zs" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-
+        <!--右边-->
         <RelativeLayout
             android:id="@+id/lay_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginStart="40dp"
             android:background="@mipmap/img_tit">
 
             <TextView
@@ -158,7 +57,78 @@
                 android:textColor="@color/color_font_white"
                 android:textSize="36sp" />
         </RelativeLayout>
+        <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_toLeftOf="@+id/lay_right"-->
+        <!--android:layout_toRightOf="@+id/lay_left">-->
+
+        <!--相机头像-->
+        <ImageView
+            android:id="@+id/iv_employee_scan_photo"
+            android:layout_width="198dp"
+            android:layout_height="198dp"
+            android:layout_marginEnd="40dp"
+            android:layout_toStartOf="@+id/lay_centre_container"
+            android:background="@mipmap/img_card_now"
+            android:padding="40dp"
+            android:src="@mipmap/img_user_b"
+            android:visibility="visible" />
+
+
+        <!--详细信息容器-->
+        <FrameLayout
+            android:id="@+id/lay_centre_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <com.example.administrator.attendanceinputv3.widget.CustomViewEmployeeDetails
+                android:id="@+id/cv_employee_details_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="40dp" />
+
+            <com.example.administrator.attendanceinputv3.widget.CustomViewEmployeeDetails
+                android:id="@+id/cv_employee_details_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="40dp" />
+
+            <com.example.administrator.attendanceinputv3.widget.CustomViewEmployeeDetails
+                android:id="@+id/cv_employee_details_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="40dp" />
+        </FrameLayout>
+        <!--相似度-->
+        <LinearLayout
+            android:id="@+id/lay_similarity"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignLeft="@+id/lay_centre_container"
+            android:background="@drawable/bg_similarity"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="相似度"
+                android:textColor="@color/color_font_white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_similarity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="相似度"
+                android:textColor="@color/color_font_white"
+                android:textSize="32dp" />
+        </LinearLayout>
+
+
     </RelativeLayout>
-
-
 </FrameLayout>

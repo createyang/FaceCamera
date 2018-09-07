@@ -1,23 +1,30 @@
 package com.example.administrator.attendanceinputv3.presenter.impl;
 
+import android.app.Activity;
 import android.os.Handler;
-import android.os.Message;
+import android.os.Looper;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import com.example.administrator.attendanceinputv3.R;
 import com.example.administrator.attendanceinputv3.model.ConnectDeviceBean;
+import com.example.administrator.attendanceinputv3.model.EmployeeInfoBean;
 import com.example.administrator.attendanceinputv3.model.PersonModel;
+import com.example.administrator.attendanceinputv3.network.EmployeeInfoRequest;
+import com.example.administrator.attendanceinputv3.network.NetworkListener;
 import com.example.administrator.attendanceinputv3.presenter.HomePresenter;
 import com.example.administrator.attendanceinputv3.utils.LogUtils;
+import com.example.administrator.attendanceinputv3.utils.StringUtils;
 import com.example.administrator.attendanceinputv3.utils.ThreadPoolUtils;
 import com.example.administrator.attendanceinputv3.utils.UiUtil;
 import com.example.administrator.attendanceinputv3.view.HomeView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.Request;
 import sdk.facecamera.sdk.FaceCamera;
 import sdk.facecamera.sdk.events.CaptureCompareDataReceivedEventHandler;
 import sdk.facecamera.sdk.pojos.CaptureCompareData;
@@ -28,14 +35,16 @@ import sdk.facecamera.sdk.pojos.CaptureCompareData;
  * @description:
  */
 public class HomePresenterImpl implements HomePresenter {
+    private final Handler handler;
     private FaceCamera faceCamera;
-    private List<PersonModel> personList = new ArrayList<>();
     private HashMap<String, PersonModel> personMatchedHashMap = new HashMap<>();
+    private ArrayList<PersonModel> personList = new ArrayList<>();
+
     private final MyCallback callback;
     private final SurfaceHolder surfaceHolder;
     private HomeView homeView;
     private ConnectDeviceBean connectDeviceBean;
-    private final HomeFragmentHandler homeFragmentHandler;
+    private Activity mActivity;
 
     private static final int scanStart = 0;
     private static final int scanPause = 1;
@@ -46,25 +55,14 @@ public class HomePresenterImpl implements HomePresenter {
     private int mCurrentRequestInfoState = scanStart;
 
 
-    private static class HomeFragmentHandler extends Handler {
-        private final WeakReference<HomePresenterImpl> homePresenterWeakReference;
+    public static final int HANDLE_WHAT_UPDATE_SCAN_INFO = 506;
+    private EmployeeInfoRequest employeeInfoRequest;
 
-        private HomeFragmentHandler(HomePresenterImpl homePresenter) {
-            homePresenterWeakReference = new WeakReference<>(homePresenter);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            HomePresenterImpl homePresenter = homePresenterWeakReference.get();
-            homePresenter.notifyDataSetChanged();
-        }
-    }
-
-    public HomePresenterImpl(HomeView homeView, ConnectDeviceBean connectDeviceBean) {
+    public HomePresenterImpl(HomeView homeView, ConnectDeviceBean connectDeviceBean, Activity mActivity) {
         this.homeView = homeView;
         this.connectDeviceBean = connectDeviceBean;
-
-        homeFragmentHandler = new HomeFragmentHandler(this);
+        this.mActivity = mActivity;
+        handler = new Handler(Looper.getMainLooper());
 
         surfaceHolder = homeView.getSurfaceHolder();
         callback = new MyCallback();
@@ -91,9 +89,6 @@ public class HomePresenterImpl implements HomePresenter {
         return personList;
     }
 
-    public void notifyDataSetChanged() {
-        homeView.notifyDataSetChanged(getPersonList());
-    }
 
     /**
      * 由于surface可能被销毁，它只在SurfaceHolder.Callback.surfaceCreated()
@@ -135,44 +130,49 @@ public class HomePresenterImpl implements HomePresenter {
                         @Override
                         public void onCaptureCompareDataReceived(CaptureCompareData data) {
                             //TODO CaptureCompareData 捕获的对象
-                            if (mCurrentScanState == scanPause) {
+//                            if (mCurrentScanState == scanPause) {
+//                                return;
+//                            }
+//                            mCurrentScanState = scanPause;
+                            //1.开始扫描
+                            startScanEmployee();
+                            LogUtils.d("onCaptureCompareDataReceived 扫描触发");
+                            if (data.getFeatureImageData() == null) {
+                                errorScanEmployee();
                                 return;
                             }
-                            mCurrentScanState = scanPause;
-                            homeView.showScanFeatureImage(data.getFeatureImageData());
-                            /**
-                             * 1.得到捕获的数据对象
-                             * 2.显示抓怕数据头像
-                             * 3.请求对比信息
-                             * 4.显示对比结果
-                             */
-                            PersonModel model = new PersonModel();
+                            final String personID = data.getPersonID();
+                            //2.如果匹配得到设备库中的人员，扫描成功
                             if (data.isPersonMatched()) {
+                                LogUtils.d("onCaptureCompareDataReceived 匹配成功" + data);
+                                final PersonModel model = new PersonModel();
                                 model.setResult(true);
-                                //如果匹配得到设备库中的人员
                                 model.setName(data.getPersonName());
                                 model.setAge(data.getAge());
-                                model.setImg(data.getFeatureImageData());
+                                model.setScanImg(data.getFeatureImageData());
                                 model.setSex(data.getSex());
-                                personMatchedHashMap.put(model.getPersonID(), model);
-
-                            } else {
-                                //匹配不到  但是数据可能不为空
-                                model.setResult(false);
-                                if (data.getPersonName() != null) {
-                                    model.setName(data.getPersonName());
+                                if (!StringUtils.isEmpty(personID)) {
+                                    //3.扫描并且匹配成功
+                                    personList.add(model);
+                                    successScanList(personList);
+                                    //4.如果匹配得到设备库中的人员id,请求人员信息
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            notifyRequestInfo(model, personList.size() - 1);
+                                        }
+                                    });
+                                } else {
+                                    //匹配失败
+                                    errorMatched();
                                 }
-                                model.setAge(data.getAge());
-                                model.setSex(data.getSex());
-                                model.setImg(data.getFeatureImageData());
+                            } else {
+                                //如果不在匹配库中，扫描失败
+                                errorScanEmployee();
                             }
-                            personList.add(model);
-
-
-                            //通知更新
-                            homeFragmentHandler.sendEmptyMessage(0);
                         }
                     });
+
                     //直接传一个holder进来就能播放，
                     // 如果需要自己处理数据，可以调用faceCamera.onStreamDataReceived
                     if (faceCamera.startVideoPlay(surfaceHolder)) {
@@ -184,4 +184,105 @@ public class HomePresenterImpl implements HomePresenter {
             }
         }
     };
+
+    private void successScanList(final ArrayList<PersonModel> personList) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                homeView.successScanList(personList);
+            }
+        });
+    }
+
+
+    private void errorMatched() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                homeView.errorMatched();
+            }
+        });
+    }
+
+    private void startScanEmployee() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                homeView.startScan();
+            }
+        });
+    }
+
+    private void errorScanEmployee() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                homeView.errorScan();
+            }
+        });
+    }
+
+
+    /**
+     * 主线程异步请求网络
+     *
+     * @param model
+     */
+    private void notifyRequestInfo(final PersonModel model, final int indexTag) {
+        if (employeeInfoRequest == null) {
+            employeeInfoRequest = new EmployeeInfoRequest();
+        }
+
+        employeeInfoRequest.getEmployeeInfoRequest(model.getPersonID(), new NetworkListener<EmployeeInfoBean>() {
+
+            private PersonModel errorPersonModel;
+
+            @Override
+            public void onStart() {
+                //请求开始
+                Request request = employeeInfoRequest.baseGetRequest();
+                int tag = (int) request.tag();
+                LogUtils.d("request onStart tag: " + tag);
+            }
+
+            @Override
+            public void onError(String localizedMessage) {
+                //请求失败
+                Request request = employeeInfoRequest.baseGetRequest();
+                int tag = (int) request.tag();
+                LogUtils.d("request onError tag: " + tag);
+
+                PersonModel personModel = personList.get(tag);
+                personModel.setVerifyFacImgUrl("");
+                personModel.setName(mActivity.getString(R.string.str_));
+                personModel.setIoTimeStr(mActivity.getString(R.string.str_));
+                personModel.setGroupName(mActivity.getString(R.string.str_));
+                personModel.setJob(mActivity.getString(R.string.str_));
+
+                //1.存入到数据集
+                personList.set(tag, personModel);
+                //2.刷新UI
+                homeView.notifyUiRefreshData(personList);
+            }
+
+            @Override
+            public void onSuccess(EmployeeInfoBean data) {
+                Request request = employeeInfoRequest.baseGetRequest();
+                int tag = (int) request.tag();
+                LogUtils.d("request onSuccess tag: " + tag);
+
+                PersonModel personModel = personList.get(tag);
+                personModel.setVerifyFacImgUrl(data.getVerifyFace());
+                personModel.setName(data.getName());
+                personModel.setIoTimeStr(data.getIoTimeStr());
+                personModel.setGroupName(data.getGroupName());
+                personModel.setJob(data.getJob());
+
+                //1.存入到数据集
+                personList.set(tag, personModel);
+                //2.刷新UI
+                homeView.notifyUiRefreshData(personList);
+            }
+        }, indexTag);
+    }
 }

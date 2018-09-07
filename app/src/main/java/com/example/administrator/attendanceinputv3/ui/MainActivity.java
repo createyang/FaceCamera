@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity {
 //        Intent intent = getIntent();
 //        ip = intent.getStringExtra("ip");
         ConnectDeviceBean connectDeviceBean = new ConnectDeviceBean();
-        connectDeviceBean.setIp("172.21.2.203");
+        connectDeviceBean.setIp("172.21.2.201");
         connectDeviceBean.setUsername("admin");
         connectDeviceBean.setPassword("admin");
         Bundle bundle = new Bundle();

@@ -34,7 +34,4 @@ dependencies {
     implementation files('libs/jna.jar')
     implementation files('libs/mina-core-2.0.16.jar')
     implementation files('libs/slf4j-android-1.6.1-RC1.jar')
-
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 }

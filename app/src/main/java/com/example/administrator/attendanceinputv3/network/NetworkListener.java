@@ -6,6 +6,7 @@ package com.example.administrator.attendanceinputv3.network;
  * @description:
  */
 public interface NetworkListener<T> {
+    void onStart();
 
     void onError(String localizedMessage);
 

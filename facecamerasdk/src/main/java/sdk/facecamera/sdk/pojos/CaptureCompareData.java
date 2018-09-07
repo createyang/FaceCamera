@@ -2,6 +2,7 @@ package sdk.facecamera.sdk.pojos;
 
 import android.graphics.Rect;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -265,4 +266,32 @@ public class CaptureCompareData {
         this.modelImageData = modelImageData;
     }
 
+
+    @Override
+    public String toString() {
+        return "CaptureCompareData{" +
+                "sequenceID=" + sequenceID +
+                ", cameraID='" + cameraID + '\'' +
+                ", addrID='" + addrID + '\'' +
+                ", addrName='" + addrName + '\'' +
+                ", captureTime=" + captureTime +
+                ", isRealtime=" + isRealtime +
+                ", isPersonMatched=" + isPersonMatched +
+                ", matchScore=" + matchScore +
+                ", personID='" + personID + '\'' +
+                ", personName='" + personName + '\'' +
+                ", personRole=" + personRole +
+                ", environmentImageData=" + Arrays.toString(environmentImageData) +
+                ", faceRegionInEnvironment=" + faceRegionInEnvironment +
+                ", featureImageData=" + Arrays.toString(featureImageData) +
+                ", faceRegionInFeature=" + faceRegionInFeature +
+                ", videoData=" + Arrays.toString(videoData) +
+                ", videoStartTime=" + videoStartTime +
+                ", videoEndTime=" + videoEndTime +
+                ", sex=" + sex +
+                ", age=" + age +
+                ", featureData=" + Arrays.toString(featureData) +
+                ", modelImageData=" + Arrays.toString(modelImageData) +
+                '}';
+    }
 }

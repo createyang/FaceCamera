@@ -1,9 +1,11 @@
 package com.example.administrator.attendanceinputv3.view;
 
+import android.content.Context;
 import android.view.SurfaceHolder;
 
 import com.example.administrator.attendanceinputv3.model.PersonModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,9 +14,17 @@ import java.util.List;
  * @description:
  */
 public interface HomeView {
+
     SurfaceHolder getSurfaceHolder();
 
-    void notifyDataSetChanged(List<PersonModel> personList);
+    void startScan();
 
-    void showScanFeatureImage(byte[] featureImageData);
+    void errorScan();
+
+
+    void errorMatched();
+
+    void successScanList(ArrayList<PersonModel> personList);
+
+    void notifyUiRefreshData(ArrayList<PersonModel> personList);
 }

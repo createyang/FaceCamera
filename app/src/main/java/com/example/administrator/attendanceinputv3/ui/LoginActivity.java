@@ -22,7 +22,7 @@ import com.example.administrator.attendanceinputv3.utils.LogUtils;
 import com.example.administrator.attendanceinputv3.utils.StringUtils;
 import com.example.administrator.attendanceinputv3.utils.ToastUtils;
 import com.example.administrator.attendanceinputv3.view.LoginView;
-import com.example.administrator.attendanceinputv3.widget.CustomEditText;
+import com.example.administrator.attendanceinputv3.widget.CustomViewEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +35,8 @@ import java.util.List;
 
 public class LoginActivity extends BaseActivity implements LoginView {
 
-    private CustomEditText mCusEditProjectCode;
-    private CustomEditText mCusSelectAttendanceDevice;
+    private CustomViewEditText mCusEditProjectCode;
+    private CustomViewEditText mCusSelectAttendanceDevice;
 
     /**
      * 设置完成
@@ -58,8 +58,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void intView() {
-        mCusEditProjectCode = (CustomEditText) findViewById(R.id.cus_edit_project_code);
-        mCusSelectAttendanceDevice = (CustomEditText) findViewById(R.id.cus_select_attendance_device);
+        mCusEditProjectCode = (CustomViewEditText) findViewById(R.id.cus_edit_project_code);
+        mCusSelectAttendanceDevice = (CustomViewEditText) findViewById(R.id.cus_select_attendance_device);
         mBtnLogin = (Button) findViewById(R.id.btn_login);
 
         editTextProCode = mCusEditProjectCode.getmEditText();

@@ -9,4 +9,7 @@
     <string name="server_exception">服务器异常</string>
     <string name="attendance_device_no_found">未发现考勤设备</string>
     <string name="attendance_device_ip_no_found">未发现考勤设备Ip</string>
+    <string name="str_">---</string>
+    <string name="str_team">班组：%1$s</string>
+    <string name="str_type">工种：%1$s</string>
 </resources>

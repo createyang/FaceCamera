@@ -18,7 +18,7 @@ import com.example.administrator.attendanceinputv3.R;
  * @created on: 2018/8/31 18:51
  * @description:
  */
-public class CustomEditText extends RelativeLayout {
+public class CustomViewEditText extends RelativeLayout {
 
     private ListView lvSelectDevice;
 
@@ -43,25 +43,25 @@ public class CustomEditText extends RelativeLayout {
     private RelativeLayout mEditLayout;
     private EditText mEditText;
 
-    public CustomEditText(Context context) {
+    public CustomViewEditText(Context context) {
         super(context);
     }
 
-    public CustomEditText(Context context, AttributeSet attrs) {
+    public CustomViewEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View view = LayoutInflater.from(context).inflate(R.layout.custom_edit_text, this, true);
+        View view = LayoutInflater.from(context).inflate(R.layout.custom_view_edit_text, this, true);
         mEditLayout = (RelativeLayout) view.findViewById(R.id.edit_layout);
         mEditText = (EditText) view.findViewById(R.id.edit_code);
         addLayoutViewGroup = (LinearLayout) view.findViewById(R.id.add_layout);
         lvSelectDevice = (ListView) view.findViewById(R.id.lv_select_device);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomEditText);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomViewEditText);
         if (typedArray != null) {
 
-            String hintTextString = typedArray.getString(R.styleable.CustomEditText_hintText);
-            int editBgResId = typedArray.getResourceId(R.styleable.CustomEditText_editBg, R.mipmap.input_01);
-            boolean canEnter = typedArray.getBoolean(R.styleable.CustomEditText_canEnter, true);
-            boolean showExpansionList = typedArray.getBoolean(R.styleable.CustomEditText_showExpansionList, false);
+            String hintTextString = typedArray.getString(R.styleable.CustomViewEditText_hintText);
+            int editBgResId = typedArray.getResourceId(R.styleable.CustomViewEditText_editBg, R.mipmap.input_01);
+            boolean canEnter = typedArray.getBoolean(R.styleable.CustomViewEditText_canEnter, true);
+            boolean showExpansionList = typedArray.getBoolean(R.styleable.CustomViewEditText_showExpansionList, false);
 
             mEditLayout.setBackground(ContextCompat.getDrawable(context, editBgResId));
             mEditText.setHint(hintTextString);

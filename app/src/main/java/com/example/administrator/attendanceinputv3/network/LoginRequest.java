@@ -20,6 +20,6 @@ public class LoginRequest extends BaseRequest<List<FaceDeviceBean>> {
     public void postRequest(String code,NetworkListener networkListener) {
         HashMap<String, String> parameterMap = new HashMap<>();
         parameterMap.put("code", code);
-        postRequest(Urls.GET_FACE_DEVICE, parameterMap,networkListener);
+        basePostRequest(Urls.URL_FACE_DEVICE, parameterMap,networkListener);
     }
 }

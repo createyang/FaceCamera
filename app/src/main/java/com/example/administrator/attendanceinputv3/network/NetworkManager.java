@@ -10,8 +10,6 @@ import com.example.administrator.attendanceinputv3.constant.Constants;
 import com.example.administrator.attendanceinputv3.model.BaseResultBean;
 import com.example.administrator.attendanceinputv3.utils.LogUtils;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -114,7 +112,8 @@ public class NetworkManager {
     }
 
 
-    public void request(final BaseRequest baseRequest) {
+    public void asynRequest(final BaseRequest baseRequest) {
+        baseRequest.getNetworkListener().onStart();
         String url = baseRequest.getUrl();
         if (url == null) {
             throw new NullPointerException("url is null");
@@ -130,9 +129,10 @@ public class NetworkManager {
             throw new NullPointerException("params is null");
         }
 
-        okHttpClient.newCall(baseRequest.getRequest()).enqueue(new Callback() {
+        okHttpClient.newCall(baseRequest.baseGetRequest()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                LogUtils.d("request base onFailure tag: " + call.request().tag());
                 if (e instanceof SocketTimeoutException) {
                     //判断超时异常
                     callbackError(baseRequest.getNetworkListener(), BaseApplication.getContext().getString(R.string.exception_request_timeout));
@@ -148,6 +148,7 @@ public class NetworkManager {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                LogUtils.d("request base onResponse tag: " + call.request().tag());
                 if (response.isSuccessful()) {
                     try {
                         String str = response.body().string();
@@ -156,13 +157,17 @@ public class NetworkManager {
                             BaseResultBean bean = gson.fromJson(str, BaseResultBean.class);
 
                             if (bean.getRetCode().equals(Constants.CHECK_RESULTS_CODE)) {
-                                ArrayList resultList = bean.getResult();
-                                if (resultList.isEmpty()) {
+                                Object result = bean.getResult();
+//                                ArrayList resultList = bean.getResult();
+                                if (result == null) {
                                     callbackError(baseRequest.getNetworkListener(), BaseApplication.getContext().getString(R.string.server_returns_empty_data));
                                     return;
                                 }
-                                JSONArray object = new JSONArray(bean.getResult());
-                                callbackSuccess(baseRequest.getNetworkListener(), baseRequest.parsedResponse(object.toString()));
+
+                                String json = gson.toJson(result);
+                                callbackSuccess(baseRequest.getNetworkListener(), baseRequest.parsedResponse(json));
+
+//                                JSONObject jsonObject = new JSONObject()
                             } else {
                                 callbackError(baseRequest.getNetworkListener(), str);
                             }

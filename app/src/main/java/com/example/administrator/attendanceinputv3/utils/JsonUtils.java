@@ -38,7 +38,6 @@ public class JsonUtils {
     /**
      * Object-->Json
      *
-     * @param map
      * @return
      */
     public static String object2json(Object obj) {
@@ -68,7 +67,6 @@ public class JsonUtils {
     /**
      * List-->Json
      *
-     * @param map
      * @return
      */
     public static String list2json(List<?> list) {
@@ -89,7 +87,6 @@ public class JsonUtils {
     /**
      * 数组Array-->Json
      *
-     * @param map
      * @return
      */
     public static String array2json(Object[] array) {
@@ -110,7 +107,6 @@ public class JsonUtils {
     /**
      * Set-->Json
      *
-     * @param map
      * @return
      */
     public static String set2json(Set<?> set) {
@@ -131,7 +127,6 @@ public class JsonUtils {
     /**
      * String-->Json
      *
-     * @param map
      * @return
      */
     public static String string2json(String s) {
