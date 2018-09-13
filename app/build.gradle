@@ -3,11 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.administrator.attendanceinputv3"
+        applicationId "com.quansoon.facecamera"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 12
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -19,17 +19,34 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-annotations:26.1.0'
     }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            //def date = new Date().format("yyyyMMdd" , TimeZone.getTimeZone("Asia/Shanghai"))
+            def date = new Date().format("yyyyMMddHHmmss", TimeZone.getTimeZone("GMT+08"))
+            if (variant.buildType.name == 'debug') {
+                outputFileName = rootProject.getName() + "_${variant.name}_${date}_${versionName}.apk"
+            }
+            if (variant.buildType.name == 'release') {
+                outputFileName = rootProject.getName() + "_${variant.name}_${date}_${versionName}.apk"
+            }
+        }
+    }
+}
+
+def releaseTime() {
+    return new Date().format("yyyyMMddHH", TimeZone.getTimeZone("UTC"))
 }
 
 dependencies {
     androidTestCompile('com.android.support:support-annotations:26.1.0') {
         force = true
     }
-    implementation ("com.github.bumptech.glide:glide:4.6.1@aar") {
-        transitive = true
-    }
+//    implementation("com.github.bumptech.glide:glide:4.6.1@aar") {
+//        transitive = true
+//    }
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

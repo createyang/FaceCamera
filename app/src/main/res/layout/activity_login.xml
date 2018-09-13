@@ -5,78 +5,47 @@
     android:layout_height="match_parent"
     android:background="@mipmap/bg">
 
-    <com.example.administrator.attendanceinputv3.widget.CustomViewTimeDate
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content" />
-    <!--<LinearLayout-->
-        <!--android:layout_width="360dp"-->
-        <!--android:layout_height="177dp"-->
-        <!--android:background="@color/colorTimeBg"-->
-        <!--android:gravity="center"-->
-        <!--android:orientation="vertical">-->
+    <com.quansoon.facecamera.widget.CustomViewTimeDate
+        android:id="@+id/cv_time_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="09:11:36"-->
-            <!--android:textColor="@color/font_white"-->
-            <!--android:textSize="76sp" />-->
-
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="08月13号 星期二"-->
-            <!--android:textColor="@color/font_white"-->
-            <!--android:textSize="24sp" />-->
-
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="08月13号 星期二"-->
-            <!--android:textColor="@color/font_white"-->
-            <!--android:textSize="20sp" />-->
-    <!--</LinearLayout>-->
 
     <Button
         android:id="@+id/btn_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginBottom="120dp"
-        android:background="@mipmap/btn"
+        android:layout_marginBottom="230dp"
+        android:background="@drawable/select_login_btn"
         android:gravity="center"
         android:padding="30dp"
         android:text="设置完成"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
         android:textColor="@color/color_font_white"
         android:textSize="32dp" />
 
-    <LinearLayout
+    <com.quansoon.facecamera.widget.CustomViewEditText
+        android:id="@+id/cus_edit_project_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="310dp"
+        app:editBg="@mipmap/input_01"
+        app:hintText="@string/please_enter_project_code" />
 
-        <com.example.administrator.attendanceinputv3.widget.CustomViewEditText
-            android:id="@+id/cus_edit_project_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:editBg="@mipmap/input_01"
-            app:hintText="@string/please_enter_project_code" />
-
-        <com.example.administrator.attendanceinputv3.widget.CustomViewEditText
-            android:id="@+id/cus_select_attendance_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            app:canEnter="false"
-            app:editBg="@mipmap/input_02"
-            app:hintText="@string/please_select_attendance_equipment"
-            app:showExpansionList="true"
-            />
-
-    </LinearLayout>
+    <com.quansoon.facecamera.widget.CustomViewEditText
+        android:id="@+id/cus_select_attendance_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cus_edit_project_code"
+        android:layout_centerHorizontal="true"
+        app:canEnter="false"
+        android:layout_marginTop="40dp"
+        app:editBg="@mipmap/input_02"
+        app:hintText="@string/please_select_attendance_equipment"
+        app:showExpansionList="true" />
 
 
 </RelativeLayout>

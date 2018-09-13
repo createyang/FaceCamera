@@ -1,134 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <SurfaceView
         android:id="@+id/sueface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!--左边-->
-        <LinearLayout
-            android:id="@+id/lay_left"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="40dp"
-            android:background="@mipmap/left_bg"
-            android:orientation="vertical">
 
-            <com.example.administrator.attendanceinputv3.widget.CustomViewTimeDate
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+    <!--右边-->
+    <LinearLayout
+        android:id="@+id/lay_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@mipmap/left_bg"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recy_view"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-        </LinearLayout>
+        <com.quansoon.facecamera.widget.CustomViewTimeDate
+            android:id="@+id/cv_time_date"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content" />
 
-        <!--右边-->
-        <RelativeLayout
-            android:id="@+id/lay_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="40dp"
-            android:background="@mipmap/img_tit">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recy_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:ems="1"
-                android:gravity="center_horizontal"
-                android:lineSpacingExtra="0.1dp"
-                android:paddingBottom="20dp"
-                android:paddingTop="20dp"
-                android:text="滨海科技大厦一期装饰工程"
-                android:textColor="@color/color_font_white"
-                android:textSize="36sp" />
-        </RelativeLayout>
-        <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_toLeftOf="@+id/lay_right"-->
-        <!--android:layout_toRightOf="@+id/lay_left">-->
-
-        <!--相机头像-->
-        <ImageView
-            android:id="@+id/iv_employee_scan_photo"
-            android:layout_width="198dp"
-            android:layout_height="198dp"
-            android:layout_marginEnd="40dp"
-            android:layout_toStartOf="@+id/lay_centre_container"
-            android:background="@mipmap/img_card_now"
-            android:padding="40dp"
-            android:src="@mipmap/img_user_b"
-            android:visibility="visible" />
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:background="@mipmap/img_tit"
+        android:gravity="center"
+        android:lines="1"
+        android:text="滨海科技大厦一期装饰工程"
+        android:textColor="@color/color_font_white"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toStartOf="@id/lay_right"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <!--详细信息容器-->
-        <FrameLayout
-            android:id="@+id/lay_centre_container"
+    <ImageView
+        android:id="@+id/iv_employee_scan_photo"
+        android:layout_width="290dp"
+        android:layout_height="310dp"
+        android:layout_marginStart="330dp"
+        android:layout_marginTop="78dp"
+        android:background="@mipmap/img_card_now"
+        android:padding="40dp"
+        android:src="@mipmap/img_user_b"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+
+    <!--详细信息容器-->
+    <FrameLayout
+        android:id="@+id/lay_centre_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/lay_right"
+        app:layout_constraintStart_toEndOf="@id/iv_employee_scan_photo"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+        <com.quansoon.facecamera.widget.CustomViewEmployeeDetails
+            android:id="@+id/cv_employee_details_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
+            android:layout_gravity="center_vertical"
+            />
 
-            <com.example.administrator.attendanceinputv3.widget.CustomViewEmployeeDetails
-                android:id="@+id/cv_employee_details_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="40dp" />
+        <com.quansoon.facecamera.widget.CustomViewEmployeeDetails
+            android:id="@+id/cv_employee_details_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+           />
 
-            <com.example.administrator.attendanceinputv3.widget.CustomViewEmployeeDetails
-                android:id="@+id/cv_employee_details_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="40dp" />
-
-            <com.example.administrator.attendanceinputv3.widget.CustomViewEmployeeDetails
-                android:id="@+id/cv_employee_details_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="40dp" />
-        </FrameLayout>
-        <!--相似度-->
-        <LinearLayout
-            android:id="@+id/lay_similarity"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignLeft="@+id/lay_centre_container"
-            android:background="@drawable/bg_similarity"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="相似度"
-                android:textColor="@color/color_font_white"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/tv_similarity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="相似度"
-                android:textColor="@color/color_font_white"
-                android:textSize="32dp" />
-        </LinearLayout>
+        <com.quansoon.facecamera.widget.CustomViewEmployeeDetails
+            android:id="@+id/cv_employee_details_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+             />
+    </FrameLayout>
 
 
-    </RelativeLayout>
-</FrameLayout>
+    <!--相似度-->
+    <LinearLayout
+        android:id="@+id/lay_similarity"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@drawable/bg_similarity"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_employee_scan_photo"
+        app:layout_constraintEnd_toStartOf="@id/lay_centre_container"
+        app:layout_constraintStart_toEndOf="@id/iv_employee_scan_photo"
+        app:layout_constraintTop_toTopOf="@+id/iv_employee_scan_photo">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/similarity"
+            android:textColor="@color/color_font_white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tv_similarity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_"
+            android:textColor="@color/color_font_white"
+            android:textSize="32dp" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

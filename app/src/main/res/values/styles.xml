@@ -10,13 +10,25 @@
 
     <!--全屏-->
     <style name="FullscreenTheme" parent="AppTheme">
-         <!--设置无标题 -->
+        <!--设置无标题 -->
         <item name="android:windowNoTitle">true</item>
-         <!--设置全屏 -->
+        <!--设置全屏 -->
         <item name="android:windowFullscreen">true</item>
         <!--设置透明Theme-->
         <!--<item name="android:windowIsTranslucent">true</item>-->
     </style>
 
+    <!--启动-->
+    <style name="LaunchTheme" parent="FullscreenTheme">
+        <item name="android:windowBackground">@drawable/bg_launch</item>
+    </style>
 
+    <style name="DialogTheme">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

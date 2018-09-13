@@ -13,5 +13,8 @@
     <color name="color_alpha_15_withs">#26ffffff</color>
     <color name="color_bg_top_current">#141A2C</color>
     <color name="color_bg_bottom_current">#B30E1E36</color>
+    <color name="txt_gray_bit">#aaaaaa</color>
+    <color name="add_text">#666666</color>
+    <color name="color_b2b2b2">#b2b2b2</color>
 
 </resources>

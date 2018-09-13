@@ -4,11 +4,11 @@
     android:useLevel="true">
 
     <size
-        android:width="80dp"
-        android:height="80dp" />
+        android:width="110dp"
+        android:height="110dp" />
 
     <stroke
-        android:width="6dp"
+        android:width="3dp"
         android:color="@color/color_font_white_2" />
 
     <solid android:color="@color/color_bg_bottom_current" />

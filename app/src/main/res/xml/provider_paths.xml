@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <paths >
+        <!--图片路径-->
+        <external-path
+            name="camera_photos"
+            path="Android/data/com.quansoon.facecamera/" />
+        <!--文件路径-->
+        <external-path
+            name="files_root"
+            path="Android/data/com.quansoon.facecamera/"/>
+
+        <root-path name="name" path="com.quansoon.facecamera" />
+    </paths>
+
+</resources>

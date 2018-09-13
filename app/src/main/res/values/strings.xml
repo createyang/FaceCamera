@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AttendanceInputV3</string>
+    <string name="app_name">FaceCamera</string>
     <string name="please_enter_project_code">请输入项目编码</string>
     <string name="please_select_attendance_equipment">请选择考勤设备</string>
     <string name="exception_request_timeout">请求超时</string>
@@ -12,4 +12,6 @@
     <string name="str_">---</string>
     <string name="str_team">班组：%1$s</string>
     <string name="str_type">工种：%1$s</string>
+    <string name="similarity">相似度</string>
+    <string name="str_lunar">农历%1$s</string>
 </resources>
