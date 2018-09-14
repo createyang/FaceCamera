@@ -100,7 +100,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
                 + "measuredWidth:" + measuredWidth
         );
         /**
-         * 1.平移旋转缩放动画
+         * 1.平移旋转缩放动画（平移）
          */
 //        AnimationUtil.startZoomAnim(translationView1, (float) 1, (float) 0.8, 0, measuredWidth+100, 0, 0, null);
         AnimationUtil.starTranslationAndRotateAnim(translationView1, (float) 1, (float) 0.9
@@ -127,9 +127,9 @@ public class HomeFragment extends BaseFragment implements HomeView {
                 AnimationUtil.startScaleToBigAnimation(laySimilarity, 1, null);
 
                 //1.动画结束后开始计时，超过一分钟显示闲时界面（界面隐藏）
-//                Handler handler = UiUtil.getHandler();
-//                handler.removeCallbacks(leisureRun);
-//                handler.postDelayed(leisureRun, 100000);
+                Handler handler = UiUtil.getHandler();
+                handler.removeCallbacks(leisureRun);
+                handler.postDelayed(leisureRun, 60000);
             }
         });
         /**
@@ -143,6 +143,8 @@ public class HomeFragment extends BaseFragment implements HomeView {
                 , -30f, 0
                 , 0.7f, 1
                 , null);
+
+
     }
 
     /**
@@ -152,24 +154,71 @@ public class HomeFragment extends BaseFragment implements HomeView {
         @Override
         public void run() {
             ToastUtils.shortShowStr(getContext(), "进入空闲模式");
+
             //1.隐藏界面
             AnimationUtil.startScaleToBigAnimation(ivEmployeeScanPhoto, 0, null);
-            AnimationUtil.startScaleToBigAnimation(customViewEmployeeDetailsFirst, 0, null);
-            AnimationUtil.startScaleToBigAnimation(customViewEmployeeDetailsSecond, 0, null);
-            AnimationUtil.startScaleToBigAnimation(customViewEmployeeDetailsThird, 0, null);
             AnimationUtil.startScaleToBigAnimation(laySimilarity, 0, null);
-            //2.将数据移至右侧
-//            recyAdapter.add(personModel, 0);
+            //2.动画恢复
+            restoreAnima();
+            //3.将数据移至右侧
+            int size = personList.size();
+            PersonModel personModel;
+            if (personList.size() == 1) {
+                personModel = personList.get(0);
+                recyAdapter.add(personModel, 0);
+            } else if (personList.size() > 1) {
+                personModel = personList.get(personList.size() - 1);
+                recyAdapter.add(personModel, 0);
+                personModel = personList.get(personList.size() - 2);
+                recyAdapter.add(personModel, 0);
+            }
 
-//            int size = personList.size();
-//            int itemCount = recyAdapter.getItemCount();
-//            int cur = size - itemCount;
-//            for (int i = 0; i < cur; i++) {
-//                PersonModel personModel = personList.get(personList.size() - 1 - i);
-//                recyAdapter.add(personModel, 0);
-//            }
+            //4.通知数据清空
+            homePresenter.removeDataList();
+//            personList.clear();
         }
     };
+
+    private void restoreAnima() {
+        View translationView1 = customViewEmployeeDetailsSecond;
+        View appearView2 = customViewEmployeeDetailsThird;
+        View disappearView3 = customViewEmployeeDetailsFirst;
+        int u = personList.size() % 3;
+
+        if (personList.size() > 1) {
+            if (u == 1) {
+                //a
+                disappearView3 = customViewEmployeeDetailsThird;
+                translationView1 = customViewEmployeeDetailsFirst;
+
+            } else if (u == 2) {
+                //b
+                disappearView3 = customViewEmployeeDetailsFirst;
+                translationView1 = customViewEmployeeDetailsSecond;
+
+            } else if (u == 0) {
+                //c
+                disappearView3 = customViewEmployeeDetailsSecond;
+                translationView1 = customViewEmployeeDetailsThird;
+            }
+        }
+
+        /**
+         * 本应该平移的缩小消失
+         */
+        AnimationUtil.startScaleToBigAnimation(translationView1, 0, null);
+
+        /**
+         * 本应该消失的回复到原位
+         */
+        AnimationUtil.starTranslationAndRotateAnim(disappearView3
+                , (float) 0.9, (float) 0
+                , measuredWidth, 0
+                , 0, 0
+                , -30f, 0
+                , 0.7f, 1
+                , null);
+    }
 
     /**
      * 成功扫描员工
@@ -406,6 +455,8 @@ public class HomeFragment extends BaseFragment implements HomeView {
             ArrayList<PersonModel> modelArrayList = new ArrayList<>();
             recyAdapter = new HomeRecyAdapter(modelArrayList, options);
             LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+            manager.scrollToPosition(0);
+            manager.setStackFromEnd(false);
             manager.setOrientation(LinearLayoutManager.VERTICAL);
             float left = DisplayUtil.dip2px(25, getContext());
             float bot = DisplayUtil.dip2px(30, getContext());

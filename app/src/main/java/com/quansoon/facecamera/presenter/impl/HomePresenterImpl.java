@@ -56,6 +56,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     public static final int HANDLE_WHAT_UPDATE_SCAN_INFO = 506;
     private EmployeeInfoRequest employeeInfoRequest;
+    private String recordLast = "";
 
     public HomePresenterImpl(HomeView homeView, ConnectDeviceBean connectDeviceBean, Activity mActivity) {
         this.homeView = homeView;
@@ -99,6 +100,11 @@ HaCamera.discoverDevice();
         return personList;
     }
 
+    @Override
+    public void removeDataList() {
+        personList.clear();
+    }
+
 
     /**
      * 由于surface可能被销毁，它只在SurfaceHolder.Callback.surfaceCreated()
@@ -140,13 +146,9 @@ HaCamera.discoverDevice();
                         @Override
                         public void onCaptureCompareDataReceived(CaptureCompareData data) {
                             //TODO CaptureCompareData 捕获的对象
-//                            if (mCurrentScanState == scanPause) {
-//                                return;
-//                            }
-//                            mCurrentScanState = scanPause;
                             //1.开始扫描
-                            startScanEmployee();
                             LogUtils.d("onCaptureCompareDataReceived 扫描触发");
+                            startScanEmployee();
                             if (data.getFeatureImageData() == null) {
                                 errorScanEmployee();
                                 return;
@@ -156,9 +158,18 @@ HaCamera.discoverDevice();
                             if (data.isPersonMatched()) {
                                 LogUtils.d("onCaptureCompareDataReceived 匹配成功" + data);
                                 if (!StringUtils.isEmpty(personID)) {
+                                    //如果最后打卡的人员在10秒内重复打卡，不执行匹配操作
+                                    if (recordLast.equals(personID)) {
+                                        return;
+                                    } else {
+                                        recordLast = personID;
+                                        handler.removeCallbacks(lastRun);
+                                        handler.postDelayed(lastRun, 10000);
+                                    }
+
                                     final PersonModel model = new PersonModel();
                                     model.setResult(true);
-                                    model.setName(data.getPersonName() + "sss" + personList.size());
+                                    model.setName(data.getPersonName());
                                     model.setAge(data.getAge());
                                     model.setScanImg(data.getFeatureImageData());
                                     model.setSex(data.getSex());
@@ -167,6 +178,7 @@ HaCamera.discoverDevice();
                                     //3.扫描并且匹配成功
                                     personList.add(model);
                                     successScanList(personList);
+
                                     //4.如果匹配得到设备库中的人员id,请求人员信息
                                     handler.post(new Runnable() {
                                         @Override
@@ -196,6 +208,13 @@ HaCamera.discoverDevice();
                     }
                 }
             }
+        }
+    };
+
+    Runnable lastRun = new Runnable() {
+        @Override
+        public void run() {
+            recordLast = "";
         }
     };
 

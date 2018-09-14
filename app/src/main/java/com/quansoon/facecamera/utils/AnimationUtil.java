@@ -162,6 +162,11 @@ public class AnimationUtil {
      */
     public static AnimatorSet startScaleToBigAnimation(View paramView,
                                                        float paramFloat, Animator.AnimatorListener paramAnimatorListener) {
+        if (paramView == null) {
+            return null;
+        }
+
+
         if (paramView.getAnimation() != null)
             paramView.getAnimation().cancel();
         paramView.clearAnimation();

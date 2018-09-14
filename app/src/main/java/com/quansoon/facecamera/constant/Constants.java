@@ -7,8 +7,10 @@ public class Constants {
     /**
      * 正式布
      */
-    public static String IP_TEST = "http://172.21.2.113:8080/client/face";
-    public static String IP_TEST_COMOM = "http://172.21.2.113:8080/client/view";
+//    public static String IP_TEST = "http://172.21.2.113:8080/client/face";
+//    public static String IP_TEST_COMOM = "http://172.21.2.113:8080/client/view";
+    public static String IP_TEST = "http://120.77.201.123:8089/client/face";
+    public static String IP_TEST_COMOM = "http://120.77.201.123:8089/client/view";
 
 
     /**

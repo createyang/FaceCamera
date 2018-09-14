@@ -18,4 +18,5 @@ public interface HomePresenter {
 
     List<PersonModel> getPersonList();
 
+    void removeDataList();
 }
