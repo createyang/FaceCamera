@@ -68,7 +68,6 @@ public abstract class BaseRequest<T> {
     void baseGetRequest(String url, Map<String, String> params, NetworkListener networkListener) {
         networkListener.onStart();
         if (!NetworkUtils.isNetworkAvailable()) {
-            ToastUtils.shortShowStr(BaseApplication.getContext(),"isNetworkAvailable 111");
             networkListener.onError(BaseApplication.getContext().getString(R.string.network_available));
             return;
         }
@@ -88,7 +87,6 @@ public abstract class BaseRequest<T> {
         networkListener.onStart();
 
         if (!NetworkUtils.isNetworkAvailable()) {
-            ToastUtils.shortShowStr(BaseApplication.getContext(),"isNetworkAvailable 222");
             networkListener.onError(BaseApplication.getContext().getString(R.string.network_available));
             return;
         }

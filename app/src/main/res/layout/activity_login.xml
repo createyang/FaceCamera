@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="310dp"
-        app:editBg="@mipmap/input_01"
+        app:editBg="@drawable/select_login_edit_01"
         app:hintText="@string/please_enter_project_code" />
 
     <com.quansoon.facecamera.widget.CustomViewEditText
@@ -41,9 +41,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/cus_edit_project_code"
         android:layout_centerHorizontal="true"
-        app:canEnter="false"
         android:layout_marginTop="40dp"
-        app:editBg="@mipmap/input_02"
+        app:canEnter="false"
+        app:editBg="@drawable/select_login_edit_02"
         app:hintText="@string/please_select_attendance_equipment"
         app:showExpansionList="true" />
 

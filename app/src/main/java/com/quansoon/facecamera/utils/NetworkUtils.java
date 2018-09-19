@@ -20,7 +20,6 @@ public class NetworkUtils {
     public static boolean isNetworkAvailable() {
         NetworkInfo info = getNetworkInfo();
         if (info != null) {
-            ToastUtils.shortShowStr(BaseApplication.getContext(), "isAvailable " + info.isAvailable());
             return info.isAvailable();
         }
         ToastUtils.shortShowStr(BaseApplication.getContext(), BaseApplication.getContext().getString(R.string.network_available));

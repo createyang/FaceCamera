@@ -14,4 +14,5 @@
     <string name="str_type">工种：%1$s</string>
     <string name="similarity">相似度</string>
     <string name="str_lunar">农历%1$s</string>
+    <string name="str_main_title">全容科技有限公司</string>
 </resources>

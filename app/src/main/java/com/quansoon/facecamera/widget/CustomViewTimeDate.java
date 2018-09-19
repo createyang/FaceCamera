@@ -36,6 +36,7 @@ public class CustomViewTimeDate extends LinearLayout {
     private static final int REFRESH_DELAY = 1000;
     long timeDateLong;
     private Handler handler;
+    public String dateStr = "";
 
     public CustomViewTimeDate(Context context) {
         super(context);
@@ -81,10 +82,11 @@ public class CustomViewTimeDate extends LinearLayout {
         public void onSuccess(TimeBean data) {
             mTvTime.setText(data.getTime());
             mTvNumberDate.setText(data.getDate() + " " + data.getDateFm());
+            dateStr = data.getDate();
+
             LogUtils.d("onSuccess " + data.getLunar());
             mTvLunarCalendar.setText(String.format(getContext().getString(R.string.str_lunar), data.getLunar()));
             timeDateLong = DateTimeUtil.getStringToDate(data.getTime(), "HH:mm:ss");
-
             handler.removeCallbacks(runnable);
             handler.post(runnable);
         }
@@ -93,6 +95,7 @@ public class CustomViewTimeDate extends LinearLayout {
     private void setUiDate() {
         String timeStr = DateTimeUtil.getCurDate("HH:mm:ss");
         String numberDateStr = DateTimeUtil.getCurDate("MM月dd日");
+        dateStr = DateTimeUtil.getCurDate("MM月dd日");
         String weekStr = DateTimeUtil.getCurDate("EEEE");
         mTvTime.setText(timeStr);
         mTvNumberDate.setText(numberDateStr + " " + weekStr);
@@ -125,5 +128,15 @@ public class CustomViewTimeDate extends LinearLayout {
         if (timeRequest != null) {
             timeRequest.getCurrentTimeRequest(networkListener);
         }
+    }
+
+    public void removeCall() {
+        if (handler != null) {
+            handler.removeCallbacks(runnable);
+        }
+    }
+
+    public String getCurData() {
+        return mTvNumberDate.getText().toString();
     }
 }

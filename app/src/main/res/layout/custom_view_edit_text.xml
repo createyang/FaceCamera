@@ -10,7 +10,7 @@
         android:id="@+id/edit_code"
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:background="@mipmap/input_01"
+        android:background="@drawable/select_login_edit_01"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:hint="@string/please_enter_project_code"
@@ -26,17 +26,17 @@
         android:id="@+id/tv_code"
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:background="@mipmap/input_01"
+        android:background="@drawable/select_login_edit_02"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:gravity="center_vertical"
         android:hint="@string/please_enter_project_code"
         android:paddingLeft="145dp"
         android:paddingRight="75dp"
-        android:gravity="center_vertical"
         android:textColor="@color/edit_text_color"
         android:textColorHint="@color/edit_hint_text_color"
-        android:visibility="visible"
-        android:textSize="36sp" />
+        android:textSize="36sp"
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/add_layout"

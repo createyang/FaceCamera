@@ -38,7 +38,7 @@ public class HomeRecyAdapter extends RecyclerView.Adapter<HomeRecyAdapter.HomeHo
 
     @Override
     public HomeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home, parent, false);
         context = parent.getContext();
         HomeHolder holder = new HomeHolder(view);
         return holder;
@@ -55,13 +55,13 @@ public class HomeRecyAdapter extends RecyclerView.Adapter<HomeRecyAdapter.HomeHo
 
         if (StringUtils.isEmpty(modelList.get(position).getName())) {
             holder.name.setText(context.getString(R.string.str_));
-        }else {
+        } else {
             holder.name.setText(modelList.get(position).getName());
         }
 
         if (StringUtils.isEmpty(modelList.get(position).getIoTimeStr())) {
             holder.time.setText(context.getString(R.string.str_));
-        }else {
+        } else {
             holder.time.setText(modelList.get(position).getIoTimeStr());
         }
 
@@ -72,6 +72,16 @@ public class HomeRecyAdapter extends RecyclerView.Adapter<HomeRecyAdapter.HomeHo
                     .into(holder.head);
         }
     }
+
+    @Override
+    public void onViewRecycled(HomeHolder holder) {
+        super.onViewRecycled(holder);
+//        ImageView imageView = holder.head;
+//        if (imageView != null) {
+//            Glide.with(context).clear(imageView);
+//        }
+    }
+
 
     public void remove(int position) {
         modelList.remove(position);

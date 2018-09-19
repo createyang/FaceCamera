@@ -12,27 +12,45 @@
 
 
     <!--右边-->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/lay_right"
-        android:layout_width="wrap_content"
+        android:layout_width="360dp"
         android:layout_height="match_parent"
         android:background="@mipmap/left_bg"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/lay_centre_container"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.quansoon.facecamera.widget.CustomViewTimeDate
             android:id="@+id/cv_time_date"
-            android:layout_width="360dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recy_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/cv_time_date" />
+
+
+
+        <TextView
+            android:id="@+id/tv_empty_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="20dp"
+            android:drawableTop="@mipmap/img_box"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            android:text="暂无最新\n打卡记录"
+            android:lineSpacingExtra="4dp"
+            android:textSize="20sp"
+            android:textColor="@color/color_font_white_2" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_title"
@@ -41,7 +59,7 @@
         android:background="@mipmap/img_tit"
         android:gravity="center"
         android:lines="1"
-        android:text="滨海科技大厦一期装饰工程"
+        android:text="@string/str_main_title"
         android:textColor="@color/color_font_white"
         android:textSize="36sp"
         app:layout_constraintEnd_toStartOf="@id/lay_right"
@@ -79,22 +97,19 @@
             android:id="@+id/cv_employee_details_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            />
+            android:layout_gravity="center_vertical" />
 
         <com.quansoon.facecamera.widget.CustomViewEmployeeDetails
             android:id="@+id/cv_employee_details_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-           />
+            android:layout_gravity="center_vertical" />
 
         <com.quansoon.facecamera.widget.CustomViewEmployeeDetails
             android:id="@+id/cv_employee_details_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-             />
+            android:layout_gravity="center_vertical" />
     </FrameLayout>
 
 

@@ -1,10 +1,17 @@
 package com.quansoon.facecamera.model;
 
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @author Caoy
  */
+@Entity
 public class PersonModel {
+    @Id
+    private Long id;
 
     private String personID;
     public String name;
@@ -19,6 +26,29 @@ public class PersonModel {
     private String job;
     private String matchScore;
 
+    @Generated(hash = 117846192)
+    public PersonModel(Long id, String personID, String name, byte age, byte sex,
+            byte[] scanImg, String ioTimeStr, String verifyFacImgUrl,
+            byte[] verifyFacImg, boolean result, String groupName, String job,
+            String matchScore) {
+        this.id = id;
+        this.personID = personID;
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+        this.scanImg = scanImg;
+        this.ioTimeStr = ioTimeStr;
+        this.verifyFacImgUrl = verifyFacImgUrl;
+        this.verifyFacImg = verifyFacImg;
+        this.result = result;
+        this.groupName = groupName;
+        this.job = job;
+        this.matchScore = matchScore;
+    }
+
+    @Generated(hash = 1012623646)
+    public PersonModel() {
+    }
 
     public String getIoTimeStr() {
         return ioTimeStr;
@@ -121,5 +151,17 @@ public class PersonModel {
 
     public void setMatchScore(String matchScore) {
         this.matchScore = matchScore;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean getResult() {
+        return this.result;
     }
 }

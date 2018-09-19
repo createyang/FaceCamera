@@ -8,7 +8,7 @@ public class TimeBean {
     /**
      * {
      * "time": "14:39:17",
-     * "date": "09月09日"
+     * "dateStr": "09月09日"
      * "dateFm": "星期日",
      * "lunar": "七月卅十",
      * }

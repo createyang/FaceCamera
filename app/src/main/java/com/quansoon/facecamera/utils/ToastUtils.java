@@ -1,8 +1,8 @@
 package com.quansoon.facecamera.utils;
 
+
 import android.content.Context;
 import android.widget.Toast;
-
 
 public class ToastUtils {
     private static Toast toast;

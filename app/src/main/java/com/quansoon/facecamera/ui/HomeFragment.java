@@ -2,8 +2,9 @@ package com.quansoon.facecamera.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -17,10 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.quansoon.facecamera.R;
 import com.quansoon.facecamera.adapter.HomeRecyAdapter;
 import com.quansoon.facecamera.base.BaseFragment;
+import com.quansoon.facecamera.constant.Constants;
 import com.quansoon.facecamera.model.ConnectDeviceBean;
 import com.quansoon.facecamera.model.PersonModel;
 import com.quansoon.facecamera.network.NetChangeObserver;
@@ -28,10 +31,14 @@ import com.quansoon.facecamera.network.NetStateReceiver;
 import com.quansoon.facecamera.presenter.HomePresenter;
 import com.quansoon.facecamera.presenter.impl.HomePresenterImpl;
 import com.quansoon.facecamera.utils.AnimationUtil;
+import com.quansoon.facecamera.utils.DatabaseManager;
 import com.quansoon.facecamera.utils.DisplayUtil;
 import com.quansoon.facecamera.utils.LogUtils;
+import com.quansoon.facecamera.utils.MediaPlayerUtil;
+import com.quansoon.facecamera.utils.SharedPreferencesUtils;
 import com.quansoon.facecamera.utils.StringUtils;
 import com.quansoon.facecamera.utils.ToastUtils;
+import com.quansoon.facecamera.utils.TtsUtil;
 import com.quansoon.facecamera.utils.UiUtil;
 import com.quansoon.facecamera.view.HomeView;
 import com.quansoon.facecamera.widget.CustomViewEmployeeDetails;
@@ -39,12 +46,13 @@ import com.quansoon.facecamera.widget.CustomViewTimeDate;
 import com.quansoon.facecamera.widget.SpaceItemDecoration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * @author Caoy
  */
-public class HomeFragment extends BaseFragment implements HomeView {
+public class HomeFragment extends BaseFragment implements HomeView, MediaPlayer.OnPreparedListener {
 
     private SurfaceView mSurfaceView;
     private RecyclerView mRecyclerView;
@@ -65,8 +73,21 @@ public class HomeFragment extends BaseFragment implements HomeView {
     private LinearLayout laySimilarity;
     private CustomViewTimeDate customViewTimeDate;
 
-    private boolean idleState = true;
     private ArrayList<PersonModel> personList;
+
+    private static final float Scale = .8f;
+    private static final float Alpha = .7f;
+    private static final float Rotation = 30f;
+    private static final int HideTime = 10000;
+    private TextView tvEmptyIcon;
+    private TextView tvTitle;
+    private Bitmap scanImgBitmap;
+    private String personName;
+    private MediaPlayerUtil mediaPlayerUtil;
+    private TtsUtil ttsUtil;
+    private DatabaseManager databaseManager;
+    private List<PersonModel> modelArrayList;
+    private SharedPreferencesUtils sharedPreferencesUtils;
 
     @Override
     public SurfaceHolder getSurfaceHolder() {
@@ -103,11 +124,12 @@ public class HomeFragment extends BaseFragment implements HomeView {
          * 1.平移旋转缩放动画（平移）
          */
 //        AnimationUtil.startZoomAnim(translationView1, (float) 1, (float) 0.8, 0, measuredWidth+100, 0, 0, null);
-        AnimationUtil.starTranslationAndRotateAnim(translationView1, (float) 1, (float) 0.9
+        AnimationUtil.starTranslationAndRotateAnim(translationView1
+                , (float) 1, (float) Scale
                 , 0, measuredWidth
                 , 0, 0
-                , 0, 30f
-                , 1, 0.7f
+                , 0, Rotation
+                , 1, Alpha
                 , null);
 //        AnimationUtil.startAlphaAnima(translationView1,1,0.8f);
 
@@ -119,17 +141,19 @@ public class HomeFragment extends BaseFragment implements HomeView {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
+                AssetFileDescriptor assetFileDescriptor = getResources().openRawResourceFd(R.raw.pixiedust);
+                mediaPlayerUtil.playMusic(assetFileDescriptor, HomeFragment.this);
+                AnimationUtil.startScaleToBigAnimation(laySimilarity, 1, null);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                AnimationUtil.startScaleToBigAnimation(laySimilarity, 1, null);
 
-                //1.动画结束后开始计时，超过一分钟显示闲时界面（界面隐藏）
+                //1.动画结束后开始计时，超过15显示闲时界面（界面隐藏）
                 Handler handler = UiUtil.getHandler();
                 handler.removeCallbacks(leisureRun);
-                handler.postDelayed(leisureRun, 60000);
+                handler.postDelayed(leisureRun, HideTime);
             }
         });
         /**
@@ -137,11 +161,11 @@ public class HomeFragment extends BaseFragment implements HomeView {
          */
 //        AnimationUtil.startZoomAnim(disappearView3, (float) 0.5, (float) 0, measuredWidth, 0, 0, 0, null);
         AnimationUtil.starTranslationAndRotateAnim(disappearView3
-                , (float) 0.9, (float) 0
+                , (float) Scale, (float) 0
                 , measuredWidth, 0
                 , 0, 0
-                , -30f, 0
-                , 0.7f, 1
+                , Rotation, 0
+                , Alpha, 1
                 , null);
 
 
@@ -158,23 +182,28 @@ public class HomeFragment extends BaseFragment implements HomeView {
             //1.隐藏界面
             AnimationUtil.startScaleToBigAnimation(ivEmployeeScanPhoto, 0, null);
             AnimationUtil.startScaleToBigAnimation(laySimilarity, 0, null);
+
             //2.动画恢复
             restoreAnima();
+
+            //3.集合偏移
+            personList.clear();
+
             //3.将数据移至右侧
-            int size = personList.size();
-            PersonModel personModel;
-            if (personList.size() == 1) {
-                personModel = personList.get(0);
-                recyAdapter.add(personModel, 0);
-            } else if (personList.size() > 1) {
-                personModel = personList.get(personList.size() - 1);
-                recyAdapter.add(personModel, 0);
-                personModel = personList.get(personList.size() - 2);
-                recyAdapter.add(personModel, 0);
-            }
+//            int size = personList.size();
+//            PersonModel personModel;
+//            if (personList.size() == 1) {
+//                personModel = personList.get(0);
+//                recyAdapter.add(personModel, 0);
+//            } else if (personList.size() > 1) {
+//                personModel = personList.get(personList.size() - 1);
+//                recyAdapter.add(personModel, 0);
+//                personModel = personList.get(personList.size() - 2);
+//                recyAdapter.add(personModel, 0);
+//            }
 
             //4.通知数据清空
-            homePresenter.removeDataList();
+//            homePresenter.removeDataList();
 //            personList.clear();
         }
     };
@@ -212,11 +241,11 @@ public class HomeFragment extends BaseFragment implements HomeView {
          * 本应该消失的回复到原位
          */
         AnimationUtil.starTranslationAndRotateAnim(disappearView3
-                , (float) 0.9, (float) 0
+                , (float) Scale, (float) 0
                 , measuredWidth, 0
                 , 0, 0
-                , -30f, 0
-                , 0.7f, 1
+                , -Rotation, 0
+                , Alpha, 1
                 , null);
     }
 
@@ -230,20 +259,29 @@ public class HomeFragment extends BaseFragment implements HomeView {
         this.personList = personList;
         //获得最新人员的数据
         PersonModel newPersonModel = personList.get(personList.size() - 1);
-        //1.显示扫描头像
-        Bitmap scanImgBitmap = UiUtil.Bytes2Bimap(newPersonModel.getScanImg());
+        //1.设置扫描头像.
+//        scanImgBitmap = null;
+//        scanImgBitmap = UiUtil.Bytes2Bimap(newPersonModel.getScanImg());
+        personName = newPersonModel.getName();
+
+        mediaPlayerUtil.stopMusic();
+        ttsUtil.stop();
+
         Glide.with(this)
-                .load(scanImgBitmap)
+                .load(newPersonModel.getScanImg())
                 .apply(options)
                 .into(ivEmployeeScanPhoto);
 
         //2.显示相似度
+        AnimationUtil.startScaleToBigAnimation(laySimilarity, 0, null);
+
         if (!StringUtils.isEmpty(newPersonModel.getMatchScore())) {
             tvSimilarity.setText(newPersonModel.getMatchScore() + "%");
         } else {
             tvSimilarity.setText(getString(R.string.str_));
         }
 
+        //3.显示扫描头像
         AnimationUtil.startScaleToBigAnimation(ivEmployeeScanPhoto, 1, new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -256,6 +294,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
                 super.onAnimationStart(animation);
             }
         });
+
     }
 
     /**
@@ -275,10 +314,11 @@ public class HomeFragment extends BaseFragment implements HomeView {
      * @param isAdd      ture:添加插入，false:更新刷新
      */
     private void dataChangeUi(ArrayList<PersonModel> personList, boolean isAdd) {
-         /*动画*/
-        View translationView1 = customViewEmployeeDetailsSecond;
-        View appearView2 = customViewEmployeeDetailsThird;
-        View disappearView3 = customViewEmployeeDetailsFirst;
+         /*动画（平移、出现、消失）*/
+        View translationView1 = null;
+        View appearView2 = customViewEmployeeDetailsFirst;
+        View disappearView3 = null;
+
         int u = personList.size() % 3;
         if (personList.size() >= 3) {
             if (u == 0) {
@@ -334,15 +374,19 @@ public class HomeFragment extends BaseFragment implements HomeView {
                 setViewHolderData(customViewEmployeeDetailsThird.getViewHolder(), personModelArrayList.get(personModelArrayList.size() - 1));
             }
         }
-        if (disappearView3 != null) {
-            if (isAdd) {
-                PersonModel personModel = personModelArrayList.get(personModelArrayList.size() - 3);
-                recyAdapter.add(personModel, 0);
-            } else {
-                recyAdapter.notifyDataSetChanged();
-            }
+
+        PersonModel personModel = personModelArrayList.get(personModelArrayList.size() - 1);
+        if (isAdd) {
+            tvEmptyIcon.setVisibility(View.GONE);
+            recyAdapter.add(personModel, 0);
+            databaseManager.saveContact(personModel);
+        } else {
+            recyAdapter.notifyDataSetChanged();
+            databaseManager.saveContact(personModel);
         }
     }
+
+
 
     /**
      * 设置主界面ui
@@ -401,6 +445,8 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
         laySimilarity = view.findViewById(R.id.lay_similarity);
         tvSimilarity = (TextView) view.findViewById(R.id.tv_similarity);
+        tvEmptyIcon = (TextView) view.findViewById(R.id.tv_empty_icon);
+        tvTitle = (TextView) view.findViewById(R.id.tv_title);
 
         customViewEmployeeDetailsFirst.measure(0, 0);
         int right = (int) DisplayUtil.dip2px(120, getContext());
@@ -419,6 +465,8 @@ public class HomeFragment extends BaseFragment implements HomeView {
         options = new RequestOptions()
                 .placeholder(R.mipmap.img_user_b)
                 .error(R.mipmap.img_user_b)
+//                .skipMemoryCache(true) //跳过内存缓存
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .circleCrop();
 
         Glide.with(this)
@@ -431,6 +479,15 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void initData() {
+        //获得界面传递的数据
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            connectDeviceBean = (ConnectDeviceBean) bundle.getSerializable(MainActivity.KEY_BUNDLE_CONNECT_DEVICE);
+        }
+        //缓存的sp数据
+        sharedPreferencesUtils = SharedPreferencesUtils.getInstance();
+        sharedPreferencesUtils.init(getContext(),connectDeviceBean.getIp());
+
         NetStateReceiver.registerObserver(new NetChangeObserver() {
             @Override
             public void onNetConnected(int type) {
@@ -443,16 +500,36 @@ public class HomeFragment extends BaseFragment implements HomeView {
             }
         });
 
+        //初始化声音
+        mediaPlayerUtil = MediaPlayerUtil.getInstance(getContext());
+        ttsUtil = TtsUtil.init(getContext());
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            connectDeviceBean = (ConnectDeviceBean) bundle.getSerializable(MainActivity.KEY_BUNDLE_CONNECT_DEVICE);
+        databaseManager = DatabaseManager.getInstance(mActivity.getBaseContext(),connectDeviceBean.getIp());
+        //判断时间是否过了十二点
+        String outTimeStr = sharedPreferencesUtils.getValue(Constants.SP.KEY_OUT_TIME, "");
+        if (!customViewTimeDate.getCurData().equals(outTimeStr)) {
+            //删除昨天数据
+            databaseManager.clearEmployees();
         }
+        //得到缓存数据
+        modelArrayList = databaseManager.getEmployeeList();
+        if (modelArrayList == null || modelArrayList.isEmpty()) {
+            tvEmptyIcon.setVisibility(View.VISIBLE);
+        } else {
+            tvEmptyIcon.setVisibility(View.GONE);
+        }
+
+
+
         //创建主界面的提供者p，处理业务逻辑
         homePresenter = new HomePresenterImpl(this, connectDeviceBean, mActivity);
+        if (!StringUtils.isEmpty(connectDeviceBean.getTitle())) {
+            tvTitle.setText(connectDeviceBean.getTitle());
+        } else {
+            tvTitle.setText(getString(R.string.str_main_title));
+        }
 
         if (recyAdapter == null) {
-            ArrayList<PersonModel> modelArrayList = new ArrayList<>();
             recyAdapter = new HomeRecyAdapter(modelArrayList, options);
             LinearLayoutManager manager = new LinearLayoutManager(getActivity());
             manager.scrollToPosition(0);
@@ -464,13 +541,22 @@ public class HomeFragment extends BaseFragment implements HomeView {
             mRecyclerView.setLayoutManager(manager);
             mRecyclerView.setAdapter(recyAdapter);
         }
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        customViewTimeDate.removeCall();
         homePresenter.removeRun();
+        ttsUtil.release();
+        mediaPlayerUtil.releaseMediaPlayer();
+        databaseManager.closeDataBase();
+        sharedPreferencesUtils.setValue(Constants.SP.KEY_OUT_TIME,customViewTimeDate.getCurData());
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        ttsUtil.notifyNewMessage(personName);
     }
 
 }

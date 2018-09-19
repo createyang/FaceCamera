@@ -64,7 +64,7 @@ public class NetworkManager {
 //
 //        SSLContext sslContext = null;
 //        try {
-//            sslContext = SSLContext.getInstance("SSL");
+//            sslContext = SSLContext.init("SSL");
 //
 //            sslContext.init(null, new TrustManager[]{xtm}, new SecureRandom());
 //
@@ -204,7 +204,6 @@ public class NetworkManager {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ToastUtils.shortShowStr(BaseApplication.getContext(), " <--- network callbackError ---> " + e);
                 networkListener.onError(e);
             }
         });

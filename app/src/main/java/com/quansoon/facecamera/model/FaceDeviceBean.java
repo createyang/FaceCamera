@@ -19,6 +19,16 @@ public class FaceDeviceBean {
         private String status;
         private String faceIp;
 
+    public String getProjInfoName() {
+        return projInfoName;
+    }
+
+    public void setProjInfoName(String projInfoName) {
+        this.projInfoName = projInfoName;
+    }
+
+    private String projInfoName;
+
         public String getDeviceId() {
             return deviceId;
         }
@@ -51,13 +61,4 @@ public class FaceDeviceBean {
             this.faceIp = faceIp;
         }
 
-    @Override
-    public String toString() {
-        return "FaceDeviceBean{" +
-                "deviceId='" + deviceId + '\'' +
-                ", deviceAddress='" + deviceAddress + '\'' +
-                ", status='" + status + '\'' +
-                ", faceIp='" + faceIp + '\'' +
-                '}';
-    }
 }

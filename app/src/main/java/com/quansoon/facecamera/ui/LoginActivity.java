@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.quansoon.facecamera.R;
 import com.quansoon.facecamera.adapter.FaceDeviceAdapter;
 import com.quansoon.facecamera.base.BaseActivity;
+import com.quansoon.facecamera.constant.Constants;
 import com.quansoon.facecamera.constant.ResultCode;
 import com.quansoon.facecamera.model.FaceDeviceBean;
 import com.quansoon.facecamera.model.VersionUpdateBean;
@@ -38,6 +39,7 @@ import com.quansoon.facecamera.update.FilesUtils;
 import com.quansoon.facecamera.utils.AnimationUtil;
 import com.quansoon.facecamera.utils.ApkUtils;
 import com.quansoon.facecamera.utils.LogUtils;
+import com.quansoon.facecamera.utils.SharedPreferencesUtils;
 import com.quansoon.facecamera.utils.StringUtils;
 import com.quansoon.facecamera.utils.ToastUtils;
 import com.quansoon.facecamera.utils.UiUtil;
@@ -81,13 +83,16 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
     private String downloadUrl;
     private FileLoadUtils fileLoadUtils;
 
+    private Boolean loginOn;
+    private SharedPreferencesUtils sharedPreferencesUtils;
+
     @Override
     public int getLayoutResId() {
         return R.layout.activity_login;
     }
 
     @Override
-    public void intView() {
+    public void initView() {
         //输入code
         mCusEditProjectCode = (CustomViewEditText) findViewById(R.id.cus_edit_project_code);
         editTextProCode = mCusEditProjectCode.getmEditText();
@@ -103,8 +108,13 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
         customViewTimeDate = (CustomViewTimeDate) findViewById(R.id.cv_time_date);
 
         /*控制按键下一步的指向*/
+        editTextProCode.setFocusable(true);
+    }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        customViewTimeDate.removeCall();
     }
 
     /**
@@ -183,14 +193,11 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
         lvSelectDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastUtils.shortShowStr(LoginActivity.this, "position" + position);
                 if (faceDeviceBeanArrayAdapter != null) {
                     selectDeviceBean = faceDeviceBeanArrayAdapter.getItem(position);
                     editTextSelectDevice.setTextColor(ContextCompat.getColor(LoginActivity.this, R.color.edit_text_color));
                     editTextSelectDevice.setText(selectDeviceBean != null ? selectDeviceBean.getDeviceAddress() : "");
                     addLayoutViewGroup.setVisibility(View.GONE);
-
-
                 }
             }
         });
@@ -201,11 +208,12 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
      */
     private void checkAndLogin() {
         //登录
-        ToastUtils.shortShowStr(LoginActivity.this, "btn_login");
         String ipAddress = editTextSelectDevice.getText().toString();
         String faceIp = "";
+        String projInfoName = "";
         if (selectDeviceBean != null) {
             faceIp = selectDeviceBean.getFaceIp();
+            projInfoName = selectDeviceBean.getProjInfoName();
         } else {
             ToastUtils.shortShowStr(this, "未获取到设备信息");
         }
@@ -218,9 +226,16 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
             return;
         }
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("ip", faceIp);
+        intent.putExtra(Constants.Extra.IP, faceIp);
+        intent.putExtra(Constants.Extra.TITLE, projInfoName);
+
+        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_IP,faceIp);
+        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_TITLE,projInfoName);
         startActivity(intent);
-//                finish();
+        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_STATE,true);
+
+
+        finish();
     }
 
     /**
@@ -240,12 +255,13 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
 
 
     @Override
-    public void intData() {
+    public void initData() {
         loginPresenter = new LoginPresenterImpl(this);
         faceDeviceBeanArrayList = new ArrayList<>();
         faceDeviceBeanArrayAdapter = new FaceDeviceAdapter(this, faceDeviceBeanArrayList);
         lvSelectDevice.setAdapter(faceDeviceBeanArrayAdapter);
-
+        sharedPreferencesUtils = SharedPreferencesUtils.getInstance();
+        sharedPreferencesUtils.init(this, Constants.SP.NAME_LOGIN_STATE);
         initUpdate();
         initListener();
     }
@@ -322,10 +338,10 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
             Process p = Runtime.getRuntime().exec("chmod 666 " + file);
             int status = p.waitFor();
             if (status == 0) {
-                ToastUtils.shortShowStr(this, "权限修改成功");
+                ToastUtils.shortShowStr(this, "安装权限修改成功");
                 return true;
             } else {
-                ToastUtils.shortShowStr(this, "权限修改失败");
+                ToastUtils.shortShowStr(this, "安装权限修改失败");
                 return false;
             }
         } catch (IOException e) {
@@ -396,7 +412,6 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
      */
     @Override
     public void onCheckUpdateFailure(String message) {
-        ToastUtils.shortShowStr(LoginActivity.this, "升级检查失败");
     }
 
     /**
@@ -406,7 +421,6 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
      */
     @Override
     public void onCheckUpdateSuccess(VersionUpdateBean data) {
-        ToastUtils.shortShowStr(LoginActivity.this, "升级检查成功");
         if (data != null && data.getVersionNo() != 0 &&
                 data.getVersionNo() > ApkUtils.getVersionNumber()) {
             fileLoadUtils.setContent(data.getDescription());
@@ -571,9 +585,7 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
     @Override
     public void onClick(View v) {
         if (v == editTextProCode) {
-
         } else if (editTextSelectDevice == v) {
-            ToastUtils.shortShowStr(LoginActivity.this, "mCusSelectAttendanceDevice " + "选择考勤的点击监听");
             goToSearchDevice(editTextProCode.getText().toString());
         } else if (mBtnLogin == v) {
             checkAndLogin();

@@ -44,13 +44,11 @@ public class NetStateReceiver extends BroadcastReceiver {
         if (ANDROID_NET_CHANGE_ACTION.equalsIgnoreCase(intent.getAction())) {
             if (!NetworkUtils.isNetworkAvailable()) {
                 Log.e(this.getClass().getName(), "<--- network disconnected --->");
-               ToastUtils.shortShowStr(context,"<--- network disconnected --->");
                 isNetAvailable = false;
             } else {
                 Log.e(this.getClass().getName(), "<--- network connected --->");
                 isNetAvailable = true;
                 mNetType = NetworkUtils.getAPNType(context);
-                ToastUtils.shortShowStr(context," <--- network connected ---> ");
             }
             notifyObserver();
         }

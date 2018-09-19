@@ -13,6 +13,7 @@ import com.quansoon.facecamera.model.PersonModel;
 import com.quansoon.facecamera.network.EmployeeInfoRequest;
 import com.quansoon.facecamera.network.NetworkListener;
 import com.quansoon.facecamera.presenter.HomePresenter;
+import com.quansoon.facecamera.utils.DateTimeUtil;
 import com.quansoon.facecamera.utils.LogUtils;
 import com.quansoon.facecamera.utils.StringUtils;
 import com.quansoon.facecamera.utils.ThreadPoolUtils;
@@ -37,7 +38,8 @@ public class HomePresenterImpl implements HomePresenter {
     private final Handler handler;
     private FaceCamera faceCamera;
     private HashMap<String, PersonModel> personMatchedHashMap = new HashMap<>();
-    private ArrayList<PersonModel> personList = new ArrayList<>();
+    private ArrayList<PersonModel> personList = new ArrayList<>(50);
+    private ArrayList<PersonModel> completePersonList = new ArrayList<>();
 
     private final MyCallback callback;
     private final SurfaceHolder surfaceHolder;
@@ -45,17 +47,10 @@ public class HomePresenterImpl implements HomePresenter {
     private ConnectDeviceBean connectDeviceBean;
     private Activity mActivity;
 
-    private static final int scanStart = 0;
-    private static final int scanPause = 1;
-    private int mCurrentScanState = scanStart;
-
-    private static final int requestInfoStart = 3;
-    private static final int requestInfoPause = 4;
-    private int mCurrentRequestInfoState = scanStart;
-
-
     public static final int HANDLE_WHAT_UPDATE_SCAN_INFO = 506;
     private EmployeeInfoRequest employeeInfoRequest;
+
+    private static final int IntervalTime = 15000;
     private String recordLast = "";
 
     public HomePresenterImpl(HomeView homeView, ConnectDeviceBean connectDeviceBean, Activity mActivity) {
@@ -68,16 +63,6 @@ public class HomePresenterImpl implements HomePresenter {
         callback = new MyCallback();
         surfaceHolder.addCallback(callback);
 
-        /*华安周工 2018-09-10 15:09:59
-HaCamera.init();
-HaCamera.onDeviceDiscovered(...);
-HaCamera.discoverDevice();
-
-华安周工 2018-09-10 15:10:06
-依次调用。*/
-//        HaCamera.init();
-//        HaCamera.onDeviceDiscovered(...);
-//        HaCamera.discoverDevice();
     }
 
     @Override
@@ -92,6 +77,7 @@ HaCamera.discoverDevice();
     public void removeRun() {
         if (callback != null) {
             surfaceHolder.removeCallback(callback);
+            handler.removeCallbacks(lastRun);
         }
     }
 
@@ -156,20 +142,21 @@ HaCamera.discoverDevice();
                             final String personID = data.getPersonID();
                             //2.如果匹配得到设备库中的人员，扫描成功
                             if (data.isPersonMatched()) {
-                                LogUtils.d("onCaptureCompareDataReceived 匹配成功" + data);
+                                LogUtils.d("onCaptureCompareDataReceived 匹配成功");
                                 if (!StringUtils.isEmpty(personID)) {
                                     //如果最后打卡的人员在10秒内重复打卡，不执行匹配操作
-                                    if (recordLast.equals(personID)) {
-                                        return;
-                                    } else {
-                                        recordLast = personID;
-                                        handler.removeCallbacks(lastRun);
-                                        handler.postDelayed(lastRun, 10000);
-                                    }
+//                                    if (recordLast.equals(personID)) {
+//                                        return;
+//                                    } else {
+//                                        recordLast = personID;
+//                                        handler.removeCallbacks(lastRun);
+//                                        handler.postDelayed(lastRun, IntervalTime);
+//                                    }
 
                                     final PersonModel model = new PersonModel();
                                     model.setResult(true);
                                     model.setName(data.getPersonName());
+                                    model.setIoTimeStr(DateTimeUtil.getDateToString(data.getCaptureTime().getTime(), "HH:mm:ss"));
                                     model.setAge(data.getAge());
                                     model.setScanImg(data.getFeatureImageData());
                                     model.setSex(data.getSex());
@@ -273,9 +260,6 @@ HaCamera.discoverDevice();
             @Override
             public void onStart() {
                 //请求开始
-//                Request request = employeeInfoRequest.baseGetRequest();
-//                int tag = (int) request.tag();
-//                LogUtils.d("request onStart tag: " + tag);
             }
 
             @Override
@@ -284,14 +268,8 @@ HaCamera.discoverDevice();
                 Request request = employeeInfoRequest.baseGetRequest();
                 int tag = (int) request.tag();
                 LogUtils.d("request onError tag: " + tag);
-
                 PersonModel personModel = personList.get(tag);
-                personModel.setVerifyFacImgUrl("");
-                personModel.setName(mActivity.getString(R.string.str_));
-                personModel.setIoTimeStr(mActivity.getString(R.string.str_));
-                personModel.setGroupName(mActivity.getString(R.string.str_));
-                personModel.setJob(mActivity.getString(R.string.str_));
-
+                personModel = setModelValue(personModel, new EmployeeInfoBean());
                 //1.存入到数据集
                 personList.set(tag, personModel);
                 //2.刷新UI
@@ -303,14 +281,8 @@ HaCamera.discoverDevice();
                 Request request = employeeInfoRequest.baseGetRequest();
                 int tag = (int) request.tag();
                 LogUtils.d("request onSuccess tag: " + tag);
-
                 PersonModel personModel = personList.get(tag);
-                personModel.setVerifyFacImgUrl(data.getVerifyFace());
-                personModel.setName(data.getName());
-                personModel.setIoTimeStr(data.getIoTimeStr());
-                personModel.setGroupName(data.getGroupName());
-                personModel.setJob(data.getJob());
-
+                personModel = setModelValue(personModel, data);
                 //1.存入到数据集
                 personList.set(tag, personModel);
                 //2.刷新UI
@@ -318,4 +290,56 @@ HaCamera.discoverDevice();
             }
         }, indexTag);
     }
+
+    private PersonModel setModelValue(PersonModel personModel, EmployeeInfoBean data) {
+        if (personModel != null) {
+            if (!StringUtils.isEmpty(data.getVerifyFace())) {
+                personModel.setVerifyFacImgUrl(data.getVerifyFace());
+            } else {
+                personModel.setVerifyFacImgUrl("");
+            }
+
+            if (!StringUtils.isEmpty(data.getName())) {
+                personModel.setName(data.getName());
+            } else {
+                if (!StringUtils.isEmpty(personModel.getName())) {
+                    personModel.setName(personModel.getName());
+                } else {
+                    personModel.setName(mActivity.getString(R.string.str_));
+                }
+            }
+
+            if (!StringUtils.isEmpty(data.getIoTimeStr())) {
+                personModel.setIoTimeStr(data.getIoTimeStr());
+            } else {
+                if (!StringUtils.isEmpty(personModel.getIoTimeStr())) {
+                    personModel.setIoTimeStr(personModel.getIoTimeStr());
+                } else {
+                    personModel.setIoTimeStr(mActivity.getString(R.string.str_));
+                }
+            }
+
+            if (!StringUtils.isEmpty(data.getGroupName())) {
+                personModel.setGroupName(data.getGroupName());
+            } else {
+                if (!StringUtils.isEmpty(personModel.getGroupName())) {
+                    personModel.setGroupName(personModel.getGroupName());
+                } else {
+                    personModel.setGroupName(mActivity.getString(R.string.str_));
+                }
+            }
+
+            if (!StringUtils.isEmpty(data.getJob())) {
+                personModel.setJob(data.getJob());
+            } else {
+                if (!StringUtils.isEmpty(personModel.getJob())) {
+                    personModel.setJob(personModel.getJob());
+                } else {
+                    personModel.setJob(mActivity.getString(R.string.str_));
+                }
+            }
+        }
+        return personModel;
+    }
+
 }

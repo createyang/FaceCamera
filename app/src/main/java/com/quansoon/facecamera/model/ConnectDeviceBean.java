@@ -12,6 +12,16 @@ public class ConnectDeviceBean implements Serializable{
     private String username;
     private String password;
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    private String title;
+
     public String getIp() {
         return ip;
     }

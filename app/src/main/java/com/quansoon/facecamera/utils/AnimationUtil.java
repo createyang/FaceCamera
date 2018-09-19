@@ -167,8 +167,9 @@ public class AnimationUtil {
         }
 
 
-        if (paramView.getAnimation() != null)
+        if (paramView.getAnimation() != null) {
             paramView.getAnimation().cancel();
+        }
         paramView.clearAnimation();
         AnimatorSet localAnimatorSet = new AnimatorSet();
         float[] arrayOfFloat1 = new float[2];
@@ -189,8 +190,9 @@ public class AnimationUtil {
         arrayOfAnimator[0] = localObjectAnimator1;
         arrayOfAnimator[1] = localObjectAnimator2;
         localAnimatorSet.playTogether(arrayOfAnimator);
-        if (paramAnimatorListener != null)
+        if (paramAnimatorListener != null) {
             localAnimatorSet.addListener(paramAnimatorListener);
+        }
         localAnimatorSet.start();
         return localAnimatorSet;
     }

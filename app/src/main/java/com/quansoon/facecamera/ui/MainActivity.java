@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.quansoon.facecamera.R;
 import com.quansoon.facecamera.base.BaseActivity;
+import com.quansoon.facecamera.constant.Constants;
 import com.quansoon.facecamera.model.ConnectDeviceBean;
 import com.quansoon.facecamera.utils.LogUtils;
 import com.quansoon.facecamera.utils.ThreadPoolUtils;
@@ -22,6 +23,7 @@ public class MainActivity extends BaseActivity {
 
     private String ip;
     private HomeFragment homeFragment;
+    private String title;
 
     @Override
     public int getLayoutResId() {
@@ -29,19 +31,22 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void intView() {
+    public void initView() {
     }
 
     @Override
-    public void intData() {
+    public void initData() {
         //获取登录账号信息
         Intent intent = getIntent();
-        ip = intent.getStringExtra("ip");
+        ip = intent.getStringExtra(Constants.Extra.IP);
+        title = intent.getStringExtra(Constants.Extra.TITLE);
         ConnectDeviceBean connectDeviceBean = new ConnectDeviceBean();
 //        connectDeviceBean.setIp("172.21.2.201");
         connectDeviceBean.setIp(ip);
         connectDeviceBean.setUsername("admin");
         connectDeviceBean.setPassword("admin");
+        connectDeviceBean.setTitle(title);
+
         Bundle bundle = new Bundle();
         bundle.putSerializable(MainActivity.KEY_BUNDLE_CONNECT_DEVICE,connectDeviceBean);
 
