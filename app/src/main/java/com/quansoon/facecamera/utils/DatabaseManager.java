@@ -9,11 +9,13 @@ import com.quansoon.facecamera.model.DaoSession;
 import com.quansoon.facecamera.model.PersonModel;
 import com.quansoon.facecamera.model.PersonModelDao;
 
+import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.PropertyPermission;
 
 /**
  * @author Caoy
@@ -65,9 +67,9 @@ public class DatabaseManager {
      */
     public List<PersonModel> getEmployeeList() {
         PersonModelDao personModelDao = mDaoSession.getPersonModelDao();
-        QueryBuilder<PersonModel> contactQueryBuilder = personModelDao.queryBuilder().limit(50);
+        QueryBuilder<PersonModel> contactQueryBuilder
+                = personModelDao.queryBuilder().orderDesc(PersonModelDao.Properties.Id).limit(50);
         List<PersonModel> list = contactQueryBuilder.list();
-        Collections.reverse(list);
         return list;
     }
 

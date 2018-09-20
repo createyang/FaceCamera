@@ -39,6 +39,7 @@ public class TtsUtil implements TextToSpeech.OnInitListener {
 
     private TtsUtil(Context context) {
         this.mContext = context;
+        ToastUtils.shortShowStr(mContext, "TextToSpeech 初始化");
         //获取上下文
         //实例化队列
         mTextToSpeech = new TextToSpeech(this.mContext, this);
@@ -52,15 +53,24 @@ public class TtsUtil implements TextToSpeech.OnInitListener {
 
     @Override
     public void onInit(int status) {
+        ToastUtils.shortShowStr(mContext, "TextToSpeech status: " + status);
         if (status == TextToSpeech.SUCCESS) {
             //设置识别语音为英文或者中文
             if (mTextToSpeech != null) {
                 int result = mTextToSpeech.setLanguage(Locale.US);
+//                int result = mTextToSpeech.setLanguage(Locale.CHINA);
+//                mTextToSpeech.Engine.DEFAULT_STREAM
+//                int result = mTextToSpeech.setLanguage(Locale.ENGLISH);
+                if (result != TextToSpeech.LANG_COUNTRY_AVAILABLE && result != TextToSpeech.LANG_AVAILABLE) {
+                    ToastUtils.shortShowStr(mContext, "暂不支持该语言");
+                }
                 if (result == TextToSpeech.LANG_MISSING_DATA
                         || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     ToastUtils.shortShowStr(mContext, "数据丢失或不支持");
                 }
             }
+        } else {
+            ToastUtils.shortShowStr(mContext, "TextToSpeech 操作失败");
         }
     }
 
@@ -78,12 +88,12 @@ public class TtsUtil implements TextToSpeech.OnInitListener {
      * //释放资源
      */
     public void release() {
-        synchronized (this) {
-            if (mTextToSpeech != null) {
-                mTextToSpeech.stop();
-                mTextToSpeech.shutdown();
-            }
+//        synchronized (this) {
+        if (mTextToSpeech != null) {
+            mTextToSpeech.stop();
+            mTextToSpeech.shutdown();
         }
+//        }
         instance = null;
     }
 
@@ -93,9 +103,10 @@ public class TtsUtil implements TextToSpeech.OnInitListener {
      * @param mes
      */
     public void notifyNewMessage(String mes) {
-        synchronized (TtsUtil.class) {
-            speakText(mes);
-        }
+//        synchronized (TtsUtil.class) {
+        ToastUtils.shortShowStr(mContext, "开始播报" + mes);
+        speakText(mes);
+//        }
     }
 
     /**
@@ -109,6 +120,7 @@ public class TtsUtil implements TextToSpeech.OnInitListener {
         }
         params.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(DEFAULT_STREAM));
         params.put(TextToSpeech.Engine.KEY_PARAM_VOLUME, String.valueOf(1));
+        params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, message);
         //设置播放类型（音频流类型）
         //朗读，注意这里三个参数的added in API level 4   四个参数的added in API level 21
         if (mTextToSpeech != null) {

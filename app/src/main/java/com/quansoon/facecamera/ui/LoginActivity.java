@@ -231,10 +231,8 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
 
         sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_IP,faceIp);
         sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_TITLE,projInfoName);
-        startActivity(intent);
         sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_STATE,true);
-
-
+        startActivity(intent);
         finish();
     }
 
@@ -266,25 +264,21 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
         initListener();
     }
 
+    @Override
+    public void netConnectedFailed() {
+
+    }
+
+    @Override
+    public void netConnectedSucceed(int type) {
+
+    }
+
     /**
      * 初始化升级
      */
     private void initUpdate() {
-        /**
-         * 检查网络
-         */
-        NetStateReceiver.registerObserver(new NetChangeObserver() {
-            @Override
-            public void onNetConnected(int type) {
-                ToastUtils.shortShowStr(LoginActivity.this, "网络连接");
-                customViewTimeDate.requestUpdateDate();
-            }
 
-            @Override
-            public void onNetDisConnect() {
-                ToastUtils.shortShowStr(LoginActivity.this, getString(R.string.network_available));
-            }
-        });
 
         /**
          * 检查权限更新

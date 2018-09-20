@@ -125,9 +125,9 @@ public class HomePresenterImpl implements HomePresenter {
             faceCamera = UiUtil.getFaceCamera();
             if (faceCamera.initialize(connectDeviceBean.getIp(), connectDeviceBean.getUsername(), connectDeviceBean.getPassword())) {
                 //faceCamera.getState()可以获取连接状态
-                Log.i("HomeFragment", "初始化成功 " + faceCamera.getState());
+                LogUtils.i("HomeFragment", "初始化成功 " + faceCamera.getState());
                 if (faceCamera.connect()) {
-                    Log.i("HomeFragment", "链接成功");
+                    LogUtils.i("HomeFragment", "链接成功");
                     faceCamera.onCaptureCompareDataReceived(new CaptureCompareDataReceivedEventHandler() {
                         @Override
                         public void onCaptureCompareDataReceived(CaptureCompareData data) {
@@ -183,7 +183,6 @@ public class HomePresenterImpl implements HomePresenter {
                             }
                         }
                     });
-
                     //直接传一个holder进来就能播放，
                     // 如果需要自己处理数据，可以调用faceCamera.onStreamDataReceived
                     if (faceCamera.startVideoPlay(surfaceHolder)) {
@@ -191,7 +190,6 @@ public class HomePresenterImpl implements HomePresenter {
 
                     } else {
                         LogUtils.i("播放失败");
-
                     }
                 }
             }

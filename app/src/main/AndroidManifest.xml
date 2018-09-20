@@ -27,6 +27,10 @@
 
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
 
+    <!--百度语音-->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <application
         android:name="com.quansoon.facecamera.base.BaseApplication"
         android:allowBackup="true"

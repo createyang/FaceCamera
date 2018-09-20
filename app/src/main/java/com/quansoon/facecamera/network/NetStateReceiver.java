@@ -7,8 +7,10 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
+import com.quansoon.facecamera.utils.LogUtils;
 import com.quansoon.facecamera.utils.NetworkUtils;
 import com.quansoon.facecamera.utils.ToastUtils;
+import com.quansoon.facecamera.utils.UiUtil;
 
 import java.util.ArrayList;
 
@@ -19,10 +21,11 @@ public class NetStateReceiver extends BroadcastReceiver {
 
     private final static String ANDROID_NET_CHANGE_ACTION = ConnectivityManager.CONNECTIVITY_ACTION;
 
-    private static boolean isNetAvailable = false;
+    private static boolean isNetAvailable = true;
     private static int mNetType;
     private static ArrayList<NetChangeObserver> mNetChangeObservers = new ArrayList<NetChangeObserver>();
     private static BroadcastReceiver mBroadcastReceiver;
+    private static NetChangeObserver observer;
 
     private NetStateReceiver() {
     }
@@ -43,12 +46,11 @@ public class NetStateReceiver extends BroadcastReceiver {
         mBroadcastReceiver = NetStateReceiver.this;
         if (ANDROID_NET_CHANGE_ACTION.equalsIgnoreCase(intent.getAction())) {
             if (!NetworkUtils.isNetworkAvailable()) {
-                Log.e(this.getClass().getName(), "<--- network disconnected --->");
+                LogUtils.d(this.getClass().getName(), "<--- network disconnected --->");
                 isNetAvailable = false;
             } else {
-                Log.e(this.getClass().getName(), "<--- network connected --->");
+                LogUtils.d(this.getClass().getName(), "<--- network connected --->");
                 isNetAvailable = true;
-                mNetType = NetworkUtils.getAPNType(context);
             }
             notifyObserver();
         }
@@ -85,11 +87,7 @@ public class NetStateReceiver extends BroadcastReceiver {
      */
     public static void unRegisterNetworkStateReceiver(Context mContext) {
         if (mBroadcastReceiver != null) {
-            try {
-                mContext.getApplicationContext().unregisterReceiver(mBroadcastReceiver);
-            } catch (Exception e) {
-
-            }
+            mContext.getApplicationContext().unregisterReceiver(mBroadcastReceiver);
         }
     }
 
@@ -101,13 +99,14 @@ public class NetStateReceiver extends BroadcastReceiver {
         return mNetType;
     }
 
-    private void notifyObserver() {
+    private static void notifyObserver() {
         if (!mNetChangeObservers.isEmpty()) {
             int size = mNetChangeObservers.size();
             for (int i = 0; i < size; i++) {
-                NetChangeObserver observer = mNetChangeObservers.get(i);
+                observer = mNetChangeObservers.get(i);
                 if (observer != null) {
-                    if (isNetworkAvailable()) {
+                    if (isNetworkAvailable() && NetworkUtils.isNetworkAvailable()) {
+                        mNetType = NetworkUtils.getAPNType();
                         observer.onNetConnected(mNetType);
                     } else {
                         observer.onNetDisConnect();
@@ -117,18 +116,20 @@ public class NetStateReceiver extends BroadcastReceiver {
         }
     }
 
+
     /**
      * 添加网络监听
      *
      * @param observer
      */
-    public static void registerObserver(NetChangeObserver observer) {
+    public static void addObserver(NetChangeObserver observer) {
         if (mNetChangeObservers == null) {
             mNetChangeObservers = new ArrayList<NetChangeObserver>();
         }
         if (!mNetChangeObservers.contains(observer)) {
             mNetChangeObservers.add(observer);
         }
+        notifyObserver();
     }
 
     /**

@@ -33,10 +33,9 @@ public class NetworkUtils {
     }
 
     /**
-     * @param context
      * @return ConnectivityManager.TYPE_MOBILE
      */
-    public static int getAPNType(Context context) {
+    public static int getAPNType() {
         NetworkInfo networkInfo = getNetworkInfo();
         if (networkInfo != null && networkInfo.isAvailable()) {
             return networkInfo.getType();
