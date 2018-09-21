@@ -1,26 +1,65 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao' // apply greenDao plugin
 
+
 android {
     compileSdkVersion 26
+
+    //签名配置
+    signingConfigs {
+        release {
+            keyAlias 'face'
+            keyPassword '123456'
+            storeFile file('D:/androidPro/key/key/face.jks')
+            storePassword '123456'
+        }
+    }
+
+    //默认配置信息
     defaultConfig {
         applicationId "com.quansoon.facecamera"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 19
-        versionName "1.9"
+        versionCode 20
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    //构建类型 分为debug和release模式
     buildTypes {
-        release {
+        debug {
+            //是否优化zip
+//            zipAlignEnabled false
+            // 移除无用的resource文件
+//            shrinkResources true
+            //启用代码混淆
             minifyEnabled false
+            //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
+        }
+
+        release {
+            //是否优化zip
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            //启用代码混淆
+            minifyEnabled true
+            //混淆规则配置文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix ".release"
+            signingConfig signingConfigs.release
         }
     }
+
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-annotations:26.1.0'
     }
 
+    //打包后apk的名字
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             //def dateStr = new Date().format("yyyyMMdd" , TimeZone.getTimeZone("Asia/Shanghai"))
@@ -35,10 +74,7 @@ android {
     }
 }
 
-def releaseTime() {
-    return new Date().format("yyyyMMddHH", TimeZone.getTimeZone("UTC"))
-}
-
+//依赖配置
 dependencies {
     androidTestCompile('com.android.support:support-annotations:26.1.0') {
         force = true

@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.administrator.attendanceinputv3", appContext.getPackageName());
+        assertEquals("com.example.administrator.facecamera", appContext.getPackageName());
     }
 }

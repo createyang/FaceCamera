@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AttendanceInputV3.iml" filepath="$PROJECT_DIR$/AttendanceInputV3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FaceCamera.iml" filepath="$PROJECT_DIR$/FaceCamera.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/facecamerasdk/facecamerasdk.iml" filepath="$PROJECT_DIR$/facecamerasdk/facecamerasdk.iml" />
     </modules>

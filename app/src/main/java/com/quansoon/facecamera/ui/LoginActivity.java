@@ -229,9 +229,9 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
         intent.putExtra(Constants.Extra.IP, faceIp);
         intent.putExtra(Constants.Extra.TITLE, projInfoName);
 
-        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_IP,faceIp);
-        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_TITLE,projInfoName);
-        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_STATE,true);
+        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_IP, faceIp);
+        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_TITLE, projInfoName);
+        sharedPreferencesUtils.setValue(Constants.SP.KEY_LOGIN_STATE, true);
         startActivity(intent);
         finish();
     }
@@ -370,7 +370,7 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnKey
      */
     @Override
     public void onGetDeviceFailure(String errorMessage) {
-        ToastUtils.shortShowStr(LoginActivity.this, "获取设备Code失败");
+        ToastUtils.shortShowStr(LoginActivity.this, "获取设备Code失败：" + errorMessage);
         addLayoutViewGroup.setVisibility(View.GONE);
     }
 

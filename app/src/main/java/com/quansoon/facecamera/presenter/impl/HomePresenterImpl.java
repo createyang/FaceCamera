@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.quansoon.facecamera.R;
+import com.quansoon.facecamera.constant.Constants;
 import com.quansoon.facecamera.model.ConnectDeviceBean;
 import com.quansoon.facecamera.model.EmployeeInfoBean;
 import com.quansoon.facecamera.model.PersonModel;
@@ -144,14 +145,17 @@ public class HomePresenterImpl implements HomePresenter {
                             if (data.isPersonMatched()) {
                                 LogUtils.d("onCaptureCompareDataReceived 匹配成功");
                                 if (!StringUtils.isEmpty(personID)) {
+
                                     //如果最后打卡的人员在10秒内重复打卡，不执行匹配操作
-//                                    if (recordLast.equals(personID)) {
-//                                        return;
-//                                    } else {
-//                                        recordLast = personID;
-//                                        handler.removeCallbacks(lastRun);
-//                                        handler.postDelayed(lastRun, IntervalTime);
-//                                    }
+                                    if (!Constants.IS_DEBUG) {
+                                        if (recordLast.equals(personID)) {
+                                            return;
+                                        } else {
+                                            recordLast = personID;
+                                            handler.removeCallbacks(lastRun);
+                                            handler.postDelayed(lastRun, IntervalTime);
+                                        }
+                                    }
 
                                     final PersonModel model = new PersonModel();
                                     model.setResult(true);
